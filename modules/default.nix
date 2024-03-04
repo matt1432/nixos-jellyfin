@@ -68,6 +68,10 @@ in {
                 type = types.bool;
                 default = false;
               };
+              throttleDelaySeconds = mkOption {
+                type = types.int;
+                default = 180;
+              };
               hardwareAccelerationType = mkOption {
                 type = types.enum ["amf" "qsv" "nvenc" "v4l2m2m" "vaapi" "videotoolbox" "rkmpp"];
                 default = "vaapi";
