@@ -59,11 +59,13 @@ in {
 
       script = ''
         backupFile() {
-            if [ -h "$1" ]; then
-                rm "$1"
-            else
-                rm -f "$1.bak"
-                mv "$1" "$1.bak"
+            if [ -w "$1" ]; then
+                if [ -h "$1" ]; then
+                    rm "$1"
+                else
+                    rm -f "$1.bak"
+                    mv "$1" "$1.bak"
+                fi
             fi
         }
 
