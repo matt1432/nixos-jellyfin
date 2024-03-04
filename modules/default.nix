@@ -3,7 +3,7 @@
   lib,
   ...
 }: let
-  inherit (lib) mdDocs mkIf mkOption types;
+  inherit (lib) boolToString mdDocs mkIf mkOption types;
   inherit (builtins) isNull toFile;
 
   cfg = config.services.jellyfin;
@@ -50,9 +50,12 @@ in {
         then "<${name} />"
         else "<${name}>${opt}</${name}>";
 
+      mkBool = opt: name:
+        "<${name}>${boolToString opt}</${name}>";
+
       importXML = file: cfg:
         toFile "${file}.xml" (import ./templates/${file}.nix {
-          inherit cfg lib mkEmptyDefault;
+          inherit cfg lib mkEmptyDefault mkBool;
         });
 
       brandingFile = importXML "branding" cfg.settings.general.branding;
