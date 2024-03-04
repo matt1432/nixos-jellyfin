@@ -4,7 +4,7 @@
   ...
 }: let
   inherit (lib) mdDocs mkIf mkOption types;
-  inherit (builtins) toFile;
+  inherit (builtins) isNull toFile;
 
   cfg = config.services.jellyfin;
 in {
@@ -17,14 +17,14 @@ in {
             general = {
               branding = {
                 loginDisclaimer = mkOption {
-                  type = types.str;
-                  default = " ";
+                  type = with types; nullOr str;
+                  default = null;
                   description = mdDocs "A message that will be displayed at the bottom of the login page.";
                 };
 
                 customCss = mkOption {
                   type = types.lines;
-                  default = " ";
+                  default = "";
                   description = mdDocs "Apply your custom CSS code for theming/branding on the web interface.";
                 };
 
@@ -45,7 +45,15 @@ in {
       jellyConfig = config.systemd.services.jellyfin.serviceConfig;
       configDir = "${jellyConfig.WorkingDirectory}/config";
 
-      importXML = file: cfg: toFile "${file}.xml" (import ./templates/${file}.nix {inherit cfg lib;});
+      mkEmptyDefault = opt: name:
+        if isNull opt
+        then "<${name} />"
+        else "<${name}>${opt}</${name}>";
+
+      importXML = file: cfg:
+        toFile "${file}.xml" (import ./templates/${file}.nix {
+          inherit cfg lib mkEmptyDefault;
+        });
 
       brandingFile = importXML "branding" cfg.settings.general.branding;
     in {
