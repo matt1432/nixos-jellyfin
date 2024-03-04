@@ -54,11 +54,7 @@ in {
       requiredBy = ["jellyfin.service"];
       postStop = "/run/current-system/systemd/bin/systemctl restart jellyfin.service";
 
-      serviceConfig = {
-        User = cfg.user;
-        Group = cfg.group;
-        WorkingDirectory = configDir;
-      };
+      serviceConfig.WorkingDirectory = configDir;
 
       script = ''
         backupFile() {
