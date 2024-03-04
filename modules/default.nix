@@ -52,7 +52,6 @@ in {
       wantedBy = ["multi-user.target"];
       before = ["jellyfin.service"];
       requiredBy = ["jellyfin.service"];
-      postStop = "/run/current-system/systemd/bin/systemctl restart jellyfin.service";
 
       serviceConfig.WorkingDirectory = configDir;
 
@@ -70,6 +69,8 @@ in {
 
         backupFile "${configDir}/branding.xml"
         ln -sf ${brandingFile} "${configDir}/branding.xml"
+
+        /run/current-system/systemd/bin/systemctl restart jellyfin.service
       '';
     };
   };
