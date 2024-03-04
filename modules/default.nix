@@ -45,7 +45,9 @@ in {
       jellyConfig = config.systemd.services.jellyfin.serviceConfig;
       configDir = "${jellyConfig.WorkingDirectory}/config";
 
-      brandingFile = toFile "branding.xml" (import ./templates/branding.nix {cfg = cfg.settings.general.branding;});
+      importXML = file: cfg: toFile "${file}.xml" (import ./templates/${file}.nix {inherit cfg lib;});
+
+      brandingFile = importXML "branding" cfg.settings.general.branding;
     in {
       wantedBy = ["multi-user.target"];
       before = ["jellyfin.service"];
