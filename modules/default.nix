@@ -60,6 +60,10 @@ in {
                 type = types.int;
                 default = 2;
               };
+              maxMuxingQueueSize = mkOption {
+                type = types.int;
+                default = 2048;
+              };
               enableThrottling = mkOption {
                 type = types.bool;
                 default = false;
