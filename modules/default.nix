@@ -186,11 +186,11 @@ in {
                 default = true;
               };
               hardwareDecodingCodecs = mkOption {
-                type = types.enum ["h264" "hevc" "mpeg2video" "mpeg4" "vc1" "vp8" "vp9" "avi"];
+                type = with types; listOf (enum ["h264" "hevc" "mpeg2video" "mpeg4" "vc1" "vp8" "vp9" "avi"]);
                 default = ["h264" "vc1"];
               };
               allowOnDemandMetadataBasedKeyframeExtractionForExtensions = mkOption {
-                type = types.enum ["mkv"];
+                type = with types; listOf (enum ["mkv"]);
                 default = ["mkv"];
               };
             };
