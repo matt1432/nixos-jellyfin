@@ -218,9 +218,12 @@ in {
         '';
 
       importXML = file: cfg:
-        toFile "${file}.xml" (import ./templates/${file}.nix {
-          inherit cfg lib mkEmptyDefault mkBool mkStringArray;
-        });
+        pkgs.writeTextFile {
+          name = "${file}.xml";
+          text = import ./templates/${file}.nix {
+            inherit cfg lib mkEmptyDefault mkBool mkStringArray;
+          };
+        };
 
       brandingFile = importXML "branding" cfg.settings.general.branding;
       encodingFile = importXML "encoding" cfg.settings.playback.transcoding;
