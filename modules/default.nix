@@ -4,6 +4,7 @@
   ...
 }: let
   inherit (lib) mdDocs mkIf mkOption types;
+  inherit (builtins) toFile;
 
   cfg = config.services.jellyfin;
 in {
@@ -39,5 +40,36 @@ in {
     };
   };
 
-  config = mkIf (cfg.enable && cfg.settings != null) {};
+  config = mkIf (cfg.enable && cfg.settings != null) {
+    systemd.services."jellyfin-conf" = let
+      jellyConfig = config.systemd.services.jellyfin.serviceConfig;
+      configDir = "${jellyConfig.WorkingDirectory}/config";
+
+      brandingFile = toFile "branding.xml" (import ./templates/branding.nix {inherit cfg;});
+    in {
+      wantedBy = ["multi-user.target"];
+      before = ["jellyfin.service"];
+      requiredBy = ["jellyfin.service"];
+
+      serviceConfig = {
+        User = cfg.user;
+        Group = cfg.group;
+        WorkingDirectory = configDir;
+      };
+
+      script = ''
+        backupFile() {
+            if [ -h "$1" ]; then
+                rm "$1"
+            else
+                rm -f "$1.bak"
+                mv "$1" "$1.bak"
+            fi
+        }
+
+        backupFile "./branding.xml"
+        ln -sf ${brandingFile} "$1" ./branding.xml
+      '';
+    };
+  };
 }
