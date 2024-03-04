@@ -5,7 +5,7 @@
   ...
 }: let
   inherit (lib) boolToString concatMapStringsSep length mdDocs mkIf mkOption types;
-  inherit (builtins) isNull toFile;
+  inherit (builtins) isNull;
 
   cfg = config.services.jellyfin;
   jellyConfig = config.systemd.services.jellyfin.serviceConfig;
@@ -213,8 +213,8 @@ in {
         then "<${name} />"
         else ''
           <${name}>
-          ${concatMapStringsSep "\n" (x: "  <string>${x}</string>") opt}
-          </${name}>
+          ${concatMapStringsSep "\n" (x: "    <string>${x}</string>") opt}
+            </${name}>
         '';
 
       importXML = file: cfg:
@@ -237,20 +237,20 @@ in {
       script = ''
         backupFile() {
             if [ -w "$1" ]; then
-                if [ -h "$1" ]; then
-                    rm "$1"
-                else
-                    rm -f "$1.bak"
-                    mv "$1" "$1.bak"
-                fi
+                rm -f "$1.bak"
+                mv "$1" "$1.bak"
             fi
         }
 
         backupFile "${configDir}/branding.xml"
-        ln -sf ${brandingFile} "${configDir}/branding.xml"
+        cp ${brandingFile} "${configDir}/branding.xml"
+        chmod 600 "${configDir}/branding.xml"
 
         backupFile "${configDir}/encoding.xml"
-        ln -sf ${encodingFile} "${configDir}/encoding.xml"
+        cp ${encodingFile} "${configDir}/encoding.xml"
+        chmod 600 "${configDir}/encoding.xml"
+
+        chown jellyfin:jellyfin -R "${configDir}"
 
         /run/current-system/systemd/bin/systemctl restart jellyfin.service
       '';
