@@ -67,8 +67,8 @@ in {
             fi
         }
 
-        backupFile "./branding.xml"
-        ln -sf ${brandingFile} "$1" ./branding.xml
+        backupFile "${configDir}/branding.xml"
+        ln -sf ${brandingFile} "$1" "${configDir}/branding.xml"
       '';
     };
   };
