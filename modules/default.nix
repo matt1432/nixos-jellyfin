@@ -156,7 +156,7 @@ in {
                 type = types.bool;
                 default = true;
               };
-              enableEnhancedNvdecDecoder = {
+              enableEnhancedNvdecDecoder = mkOption {
                 type = types.bool;
                 default = true;
                 description = mdDocs "Enhanced Nvdec or system native decoder is required for DoVi to SDR tone-mapping.";
