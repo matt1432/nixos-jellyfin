@@ -41,8 +41,6 @@ in {
   };
 
   config = mkIf (cfg.enable && cfg.settings != null) {
-    systemd.services."jellyfin".partOf = ["jellyfin-conf.service"];
-
     systemd.services."jellyfin-conf" = let
       jellyConfig = config.systemd.services.jellyfin.serviceConfig;
       configDir = "${jellyConfig.WorkingDirectory}/config";
@@ -54,7 +52,7 @@ in {
       wantedBy = ["multi-user.target"];
       before = ["jellyfin.service"];
       requiredBy = ["jellyfin.service"];
-      partOf = ["jellyfin.service"];
+      postStop = "/run/current-system/systemd/bin/systemctl restart jellyfin.service";
 
       serviceConfig = {
         User = cfg.user;
