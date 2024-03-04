@@ -68,7 +68,7 @@ in {
         }
 
         backupFile "${configDir}/branding.xml"
-        ln -sf ${brandingFile} "$1" "${configDir}/branding.xml"
+        ln -sf ${brandingFile} "${configDir}/branding.xml"
       '';
     };
   };
