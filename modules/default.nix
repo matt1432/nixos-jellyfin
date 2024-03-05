@@ -202,27 +202,27 @@ in {
                           ];
                         };
                         disabledMetadataSavers = mkOption {
-                          type = listOf str;
+                          type = nullOr (listOf str);
                           default = null;
                         };
                         localMetadataReaderOrder = mkOption {
-                          type = listOf str;
+                          type = nullOr (listOf str);
                           default = null;
                         };
                         disabledMetadataFetchers = mkOption {
-                          type = listOf str;
+                          type = nullOr (listOf str);
                           default = null;
                         };
                         metadataFetcherOrder = mkOption {
-                          type = listOf str;
+                          type = nullOr (listOf str);
                           default = null;
                         };
                         disabledImageFetchers = mkOption {
-                          type = listOf str;
+                          type = nullOr (listOf str);
                           default = null;
                         };
                         imageFetcherOrder = mkOption {
-                          type = listOf str;
+                          type = nullOr (listOf str);
                           default = null;
                         };
                       };
@@ -265,11 +265,11 @@ in {
                 };
                 # FIXME: what is this?
                 contentTypes = mkOption {
-                  type = with types; listOf str;
+                  type = with types; nullOr (listOf str);
                   default = null;
                 };
                 pathSubstitutions = mkOption {
-                  type = with types; listOf str;
+                  type = with types; nullOr (listOf str);
                   default = null;
                 };
               };
@@ -432,7 +432,7 @@ in {
                 };
                 # FIXME: what is this?
                 codecsUsed = mkOption {
-                  type = with types; listOf str;
+                  type = with types; nullOr (listOf str);
                   default = null;
                 };
               };
