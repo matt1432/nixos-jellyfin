@@ -533,21 +533,21 @@ in {
 
       mkStringArray = opt: name: ind:
         if isNull opt
-        then "${optionalString ind indent}${indent}<${name} />"
+        then "${optionalString ind indent2}${indent}<${name} />"
         else ''
-          ${optionalString ind indent}${indent}<${name}>
+          ${optionalString ind indent2}${indent}<${name}>
           ${concatMapStringsSep "\n"
-            (x: "  ${optionalString ind indent}${indent}<string>${x}</string>")
+            (x: "  ${optionalString ind indent2}${indent}<string>${x}</string>")
             opt}
-          ${optionalString ind indent}${indent}</${name}>
+          ${optionalString ind indent2}${indent}</${name}>
         '';
 
       mkPluginRepoInfo = repo: ''
-        ${indent}<RepositoryInfo>
-        ${indent}${indent}<Name>${repo.name}</Name>
-        ${indent}${indent}<Url>${repo.url}</Url>
-        ${indent}${indent}<Enabled>${boolToString repo.enable}</Enabled>
-        ${indent}</RepositoryInfo>
+        ${indent2}<RepositoryInfo>
+        ${indent2}${indent}<Name>${repo.name}</Name>
+        ${indent2}${indent}<Url>${repo.url}</Url>
+        ${indent2}${indent}<Enabled>${boolToString repo.enable}</Enabled>
+        ${indent2}</RepositoryInfo>
       '';
 
       mkMetadataOptions = meta: ''
