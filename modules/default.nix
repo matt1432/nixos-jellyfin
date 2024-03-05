@@ -532,7 +532,7 @@ in {
 
       mkStringArray = opt: name: ind:
         if isNull opt
-        then "<${name} />"
+        then "${optionalString ind indent}${indent}<${name} />"
         else ''
           ${optionalString ind indent}${indent}<${name}>
           ${optionalString ind indent}${indent}${concatMapStringsSep "\n" (x: "  <string>${x}</string>") opt}
@@ -548,15 +548,15 @@ in {
       '';
 
       mkMetadataOptions = meta: ''
-        <MetadataOptions>
-          <ItemType>${meta.itemType}</ItemType>
+        ${indent}<MetadataOptions>
+          ${indent}<ItemType>${meta.itemType}</ItemType>
         ${mkStringArray meta.disabledMetadataSavers "DisabledMetadataSavers" true}
         ${mkStringArray meta.localMetadataReaderOrder "LocalMetadataReaderOrder" true}
         ${mkStringArray meta.disabledMetadataFetchers "DisabledMetadataFetchers" true}
         ${mkStringArray meta.metadataFetcherOrder "MetadataFetcherOrder" true}
         ${mkStringArray meta.disabledImageFetchers "DisabledImageFetchers" true}
         ${mkStringArray meta.imageFetcherOrder "ImageFetcherOrder" true}
-        </MetadataOptions>
+        ${indent}</MetadataOptions>
       '';
 
       importXML = file: cfg:
