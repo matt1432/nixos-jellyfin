@@ -579,7 +579,6 @@ in {
       encodingFile = importXML "encoding" cfg.settings.playback.transcoding;
       systemFile = importXML "system" cfg.settings;
     in {
-      wantedBy = ["multi-user.target"];
       before = ["jellyfin.service"];
       requiredBy = ["jellyfin.service"];
 
