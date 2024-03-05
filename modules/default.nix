@@ -520,6 +520,8 @@ in {
   };
 
   config = mkIf (cfg.enable && cfg.settings != null) {
+    systemd.services."jellyfin".restartTriggers = [(builtins.toJSON cfg.settings)];
+
     systemd.services."jellyfin-conf" = let
       mkEmptyDefault = opt: name:
         if isNull opt
