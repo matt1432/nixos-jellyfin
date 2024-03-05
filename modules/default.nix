@@ -4,7 +4,17 @@
   pkgs,
   ...
 }: let
-  inherit (lib) boolToString concatMapStringsSep length mdDocs mkIf mkOption types;
+  inherit
+    (lib)
+    boolToString
+    concatMapStringsSep
+    length
+    mdDocs
+    mkIf
+    mkOption
+    optionalString
+    types
+    ;
   inherit (builtins) isNull;
 
   cfg = config.services.jellyfin;
@@ -19,20 +29,21 @@ in {
           options = {
             plugins = {
               pluginRepositories = mkOption {
-                type = with types; listOf (submodule {
-                  options = {
-                    name = mkOption {
-                      type = types.str;
+                type = with types;
+                  listOf (submodule {
+                    options = {
+                      name = mkOption {
+                        type = types.str;
+                      };
+                      url = mkOption {
+                        type = types.str;
+                      };
+                      enable = mkOption {
+                        type = types.bool;
+                        default = true;
+                      };
                     };
-                    url = mkOption {
-                      type = types.str;
-                    };
-                    enable = mkOption {
-                      type = types.bool;
-                      default = true;
-                    };
-                  };
-                });
+                  });
                 default = [
                   {
                     name = "Jellyfin Stable";
@@ -173,6 +184,73 @@ in {
                   type = types.int;
                   default = 0;
                 };
+
+                metadataOptions = mkOption {
+                  type = with types;
+                    listOf (submodule {
+                      options = {
+                        itemType = mkOption {
+                          type = enum [
+                            "Book"
+                            "Movie"
+                            "MusicVideo"
+                            "Series"
+                            "MusicAlbum"
+                            "MusicArtist"
+                            "BoxSet"
+                            "Season"
+                            "Episode"
+                          ];
+                        };
+                        disabledMetadataSavers = mkOption {
+                          type = listOf str;
+                          default = [];
+                        };
+                        localMetadataReaderOrder = mkOption {
+                          type = listOf str;
+                          default = [];
+                        };
+                        disabledMetadataFetchers = mkOption {
+                          type = listOf str;
+                          default = [];
+                        };
+                        metadataFetcherOrder = mkOption {
+                          type = listOf str;
+                          default = [];
+                        };
+                        disabledImageFetchers = mkOption {
+                          type = listOf str;
+                          default = [];
+                        };
+                        imageFetcherOrder = mkOption {
+                          type = listOf str;
+                          default = [];
+                        };
+                      };
+                    });
+                  default = [
+                    {itemType = "Book";}
+                    {itemType = "Movie";}
+                    {
+                      itemType = "MusicVideo";
+                      disabledMetadataFetchers = ["The Open Movie Database"];
+                      disabledImageFetchers = ["The Open Movie Database"];
+                    }
+                    {itemType = "Series";}
+                    {
+                      itemType = "MusicAlbum";
+                      disabledMetadataFetchers = ["TheAudioDB"];
+                    }
+                    {
+                      itemType = "MusicArtist";
+                      disabledMetadataFetchers = ["TheAudioDB"];
+                    }
+                    {itemType = "BoxSet";}
+                    {itemType = "Season";}
+                    {itemType = "Episode";}
+                  ];
+                };
+
                 # FIXME: are these in the right place?
                 enableNormalizedItemByNameIds = mkOption {
                   type = types.bool;
@@ -451,16 +529,18 @@ in {
 
       mkBool = opt: name: "<${name}>${boolToString opt}</${name}>";
 
-      mkStringArray = opt: name:
+      indent = "  ";
+
+      mkStringArray = opt: name: ind:
         if length == 0
         then "<${name} />"
         else ''
-          <${name}>
-          ${concatMapStringsSep "\n" (x: "    <string>${x}</string>") opt}
-            </${name}>
+          ${optionalString ind indent}<${name}>
+          ${optionalString ind indent}${
+            concatMapStringsSep "\n" (x: "    <string>${x}</string>") opt
+          }
+            ${optionalString ind indent}</${name}>
         '';
-
-      indent = "  ";
 
       mkPluginRepoInfo = repo: ''
         ${indent}<RepositoryInfo>
@@ -470,11 +550,31 @@ in {
         ${indent}</RepositoryInfo>
       '';
 
+      mkMetadataOptions = meta: ''
+        <MetadataOptions>
+          <ItemType>${meta.itemType}</ItemType>
+        ${mkStringArray meta.disabledMetadataSavers "DisabledMetadataSavers" true}
+        ${mkStringArray meta.localMetadataReaderOrder "LocalMetadataReaderOrder" true}
+        ${mkStringArray meta.disabledMetadataFetchers "DisabledMetadataFetchers" true}
+        ${mkStringArray meta.metadataFetcherOrder "MetadataFetcherOrder" true}
+        ${mkStringArray meta.disabledImageFetchers "DisabledImageFetchers" true}
+        ${mkStringArray meta.imageFetcherOrder "ImageFetcherOrder" true}
+        </MetadataOptions>
+      '';
+
       importXML = file: cfg:
         pkgs.writeTextFile {
           name = "${file}.xml";
           text = import ./templates/${file}.nix {
-            inherit cfg lib mkEmptyDefault mkBool mkStringArray mkPluginRepoInfo;
+            inherit
+              cfg
+              lib
+              mkBool
+              mkEmptyDefault
+              mkMetadataOptions
+              mkStringArray
+              mkPluginRepoInfo
+              ;
           };
         };
 
