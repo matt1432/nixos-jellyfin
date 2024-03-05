@@ -539,16 +539,14 @@ in {
           ${concatMapStringsSep "\n"
             (x: "  ${optionalString ind indent2}${indent}<string>${x}</string>")
             opt}
-          ${optionalString ind indent2}${indent}</${name}>
-        '';
+          ${optionalString ind indent2}${indent}</${name}>'';
 
       mkPluginRepoInfo = repo: ''
         ${indent2}<RepositoryInfo>
         ${indent2}${indent}<Name>${repo.name}</Name>
         ${indent2}${indent}<Url>${repo.url}</Url>
         ${indent2}${indent}<Enabled>${boolToString repo.enable}</Enabled>
-        ${indent2}</RepositoryInfo>
-      '';
+        ${indent2}</RepositoryInfo>'';
 
       mkMetadataOptions = meta: ''
         ${indent2}<MetadataOptions>
@@ -559,8 +557,7 @@ in {
         ${mkStringArray meta.metadataFetcherOrder "MetadataFetcherOrder" true}
         ${mkStringArray meta.disabledImageFetchers "DisabledImageFetchers" true}
         ${mkStringArray meta.imageFetcherOrder "ImageFetcherOrder" true}
-        ${indent2}</MetadataOptions>
-      '';
+        ${indent2}</MetadataOptions>'';
 
       importXML = file: cfg:
         pkgs.writeTextFile {
