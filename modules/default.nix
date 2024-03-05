@@ -8,7 +8,6 @@
     (lib)
     boolToString
     concatMapStringsSep
-    length
     mdDocs
     mkIf
     mkOption
@@ -204,27 +203,27 @@ in {
                         };
                         disabledMetadataSavers = mkOption {
                           type = listOf str;
-                          default = [];
+                          default = null;
                         };
                         localMetadataReaderOrder = mkOption {
                           type = listOf str;
-                          default = [];
+                          default = null;
                         };
                         disabledMetadataFetchers = mkOption {
                           type = listOf str;
-                          default = [];
+                          default = null;
                         };
                         metadataFetcherOrder = mkOption {
                           type = listOf str;
-                          default = [];
+                          default = null;
                         };
                         disabledImageFetchers = mkOption {
                           type = listOf str;
-                          default = [];
+                          default = null;
                         };
                         imageFetcherOrder = mkOption {
                           type = listOf str;
-                          default = [];
+                          default = null;
                         };
                       };
                     });
@@ -267,11 +266,11 @@ in {
                 # FIXME: what is this?
                 contentTypes = mkOption {
                   type = with types; listOf str;
-                  default = [];
+                  default = null;
                 };
                 pathSubstitutions = mkOption {
                   type = with types; listOf str;
-                  default = [];
+                  default = null;
                 };
               };
             };
@@ -434,7 +433,7 @@ in {
                 # FIXME: what is this?
                 codecsUsed = mkOption {
                   type = with types; listOf str;
-                  default = [];
+                  default = null;
                 };
               };
 
@@ -532,14 +531,12 @@ in {
       indent = "  ";
 
       mkStringArray = opt: name: ind:
-        if length == 0
+        if isNull opt
         then "<${name} />"
         else ''
-          ${optionalString ind indent}<${name}>
-          ${optionalString ind indent}${
-            concatMapStringsSep "\n" (x: "    <string>${x}</string>") opt
-          }
-            ${optionalString ind indent}</${name}>
+          ${optionalString ind indent}${indent}<${name}>
+          ${optionalString ind indent}${indent}${concatMapStringsSep "\n" (x: "  <string>${x}</string>") opt}
+          ${optionalString ind indent}${indent}</${name}>
         '';
 
       mkPluginRepoInfo = repo: ''

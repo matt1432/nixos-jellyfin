@@ -27,9 +27,9 @@ xml
     ${mkEmptyDefault cfg.general.paths.metadataNetworkPath "MetadataNetworkPath"}
     <PreferredMetadataLanguage>${cfg.libraries.metadata.preferredMetadataLanguage}</PreferredMetadataLanguage>
     <MetadataCountryCode>${cfg.libraries.metadata.metadataCountryCode}</MetadataCountryCode>
-    ${mkStringArray cfg.libraries.search.sortReplaceCharacters "SortReplaceCharacters" false}
-    ${mkStringArray cfg.libraries.search.sortRemoveCharacters "SortRemoveCharacters" false}
-    ${mkStringArray cfg.libraries.search.sortRemoveWords "SortRemoveWords" false}
+  ${mkStringArray cfg.libraries.search.sortReplaceCharacters "SortReplaceCharacters" false}
+  ${mkStringArray cfg.libraries.search.sortRemoveCharacters "SortRemoveCharacters" false}
+  ${mkStringArray cfg.libraries.search.sortRemoveWords "SortRemoveWords" false}
     <MinResumePct>${toString cfg.playback.resume.minResumePct}</MinResumePct>
     <MaxResumePct>${toString cfg.playback.resume.maxResumePct}</MaxResumePct>
     <MinResumeDurationSeconds>${toString cfg.playback.resume.minResumeDurationSeconds}</MinResumeDurationSeconds>
@@ -38,27 +38,27 @@ xml
     <LibraryMonitorDelay>${toString cfg.libraries.libraryMonitorDelay}</LibraryMonitorDelay>
     <ImageSavingConvention>${cfg.libraries.metadata.imageSavingConvention}</ImageSavingConvention>
     <MetadataOptions>
-    ${lib.concatMapStringsSep "\n" mkMetadataOptions cfg.libraries.metadata.metadataOptions}
+  ${lib.concatMapStringsSep "\n" mkMetadataOptions cfg.libraries.metadata.metadataOptions}
     </MetadataOptions>
     ${mkBool cfg.libraries.metadata.skipDeserializationForBasicTypes "SkipDeserializationForBasicTypes"}
     <ServerName>${cfg.general.serverName}</ServerName>
     <UICulture>${cfg.general.displayLanguage}</UICulture>
     ${mkBool cfg.libraries.metadata.saveMetadataHidden "SaveMetadataHidden"}
-    ${mkStringArray cfg.libraries.metadata.contentTypes "ContentTypes" false}
+  ${mkStringArray cfg.libraries.metadata.contentTypes "ContentTypes" false}
     <RemoteClientBitrateLimit>${toString cfg.playback.streaming.remoteClientBitrateLimit}</RemoteClientBitrateLimit>
     ${mkBool cfg.libraries.display.enableFolderView "EnableFolderView"}
     ${mkBool cfg.libraries.display.enableGroupingIntoCollections "EnableGroupingIntoCollections"}
     ${mkBool cfg.libraries.display.displaySpecialsWithinSeasons "DisplaySpecialsWithinSeasons"}
-    ${mkStringArray cfg.playback.transcoding.codecsUsed "CodecsUsed" false}
+  ${mkStringArray cfg.playback.transcoding.codecsUsed "CodecsUsed" false}
     <PluginRepositories>
-      ${lib.concatMapStringsSep "\n" mkPluginRepoInfo cfg.plugins.pluginRepositories}
+  ${lib.concatMapStringsSep "\n" mkPluginRepoInfo cfg.plugins.pluginRepositories}
     </PluginRepositories>
     ${mkBool cfg.libraries.display.enableExternalContentInSuggestions "EnableExternalContentInSuggestions"}
     <ImageExtractionTimeoutMs>${toString cfg.libraries.metadata.imageExtractionTimeoutMs}</ImageExtractionTimeoutMs>
-    ${mkStringArray cfg.libraries.metadata.pathSubstitutions "PathSubstitutions" false}
+  ${mkStringArray cfg.libraries.metadata.pathSubstitutions "PathSubstitutions" false}
     ${mkBool cfg.advanced.logs.enableSlowResponseWarning "EnableSlowResponseWarning"}
     <SlowResponseThresholdMs>${toString cfg.advanced.logs.slowResponseThresholdMs}</SlowResponseThresholdMs>
-    ${mkStringArray cfg.advanced.networking.corsHosts "CorsHosts" false}
+  ${mkStringArray cfg.advanced.networking.corsHosts "CorsHosts" false}
     <ActivityLogRetentionDays>${toString cfg.advanced.logs.activityLogRetentionDays}</ActivityLogRetentionDays>
     <LibraryScanFanoutConcurrency>${toString cfg.libraries.metadata.libraryScanFanoutConcurrency}</LibraryScanFanoutConcurrency>
     <LibraryMetadataRefreshConcurrency>${toString cfg.libraries.metadata.libraryMetadataRefreshConcurrency}</LibraryMetadataRefreshConcurrency>

@@ -46,7 +46,7 @@ xml
     ${mkBool cfg.enableHardwareEncoding "EnableHardwareEncoding"}
     ${mkBool cfg.allowHevcEncoding "AllowHevcEncoding"}
     ${mkBool cfg.enableSubtitleExtraction "EnableSubtitleExtraction"}
-    ${mkStringArray cfg.hardwareDecodingCodecs "HardwareDecodingCodecs" false}
-    ${mkStringArray cfg.allowOnDemandMetadataBasedKeyframeExtractionForExtensions "AllowOnDemandMetadataBasedKeyframeExtractionForExtensions" false}
+  ${mkStringArray cfg.hardwareDecodingCodecs "HardwareDecodingCodecs" false}
+  ${mkStringArray cfg.allowOnDemandMetadataBasedKeyframeExtractionForExtensions "AllowOnDemandMetadataBasedKeyframeExtractionForExtensions" false}
   </EncodingOptions>
 ''
