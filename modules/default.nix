@@ -217,7 +217,7 @@ in {
                   default = false;
                 };
                 downMixAudioBoost = mkOption {
-                  type = types.int;
+                  type = types.int; # FIXME: it's a float
                   default = 2;
                 };
                 maxMuxingQueueSize = mkOption {
@@ -486,7 +486,7 @@ in {
 
       brandingFile = importXML "branding" cfg.settings.general.branding;
       encodingFile = importXML "encoding" cfg.settings.playback.transcoding;
-      systemFile = importXML "encoding" cfg.settings;
+      systemFile = importXML "system" cfg.settings;
     in {
       wantedBy = ["multi-user.target"];
       before = ["jellyfin.service"];
