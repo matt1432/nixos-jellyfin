@@ -529,13 +529,16 @@ in {
       mkBool = opt: name: "<${name}>${boolToString opt}</${name}>";
 
       indent = "  ";
+      indent2 = "${indent}${indent}";
 
       mkStringArray = opt: name: ind:
         if isNull opt
         then "${optionalString ind indent}${indent}<${name} />"
         else ''
           ${optionalString ind indent}${indent}<${name}>
-          ${optionalString ind indent}${indent}${concatMapStringsSep "\n" (x: "  <string>${x}</string>") opt}
+          ${concatMapStringsSep "\n"
+            (x: "  ${optionalString ind indent}${indent}<string>${x}</string>")
+            opt}
           ${optionalString ind indent}${indent}</${name}>
         '';
 
@@ -548,15 +551,15 @@ in {
       '';
 
       mkMetadataOptions = meta: ''
-        ${indent}<MetadataOptions>
-          ${indent}<ItemType>${meta.itemType}</ItemType>
+        ${indent2}<MetadataOptions>
+          ${indent2}<ItemType>${meta.itemType}</ItemType>
         ${mkStringArray meta.disabledMetadataSavers "DisabledMetadataSavers" true}
         ${mkStringArray meta.localMetadataReaderOrder "LocalMetadataReaderOrder" true}
         ${mkStringArray meta.disabledMetadataFetchers "DisabledMetadataFetchers" true}
         ${mkStringArray meta.metadataFetcherOrder "MetadataFetcherOrder" true}
         ${mkStringArray meta.disabledImageFetchers "DisabledImageFetchers" true}
         ${mkStringArray meta.imageFetcherOrder "ImageFetcherOrder" true}
-        ${indent}</MetadataOptions>
+        ${indent2}</MetadataOptions>
       '';
 
       importXML = file: cfg:
