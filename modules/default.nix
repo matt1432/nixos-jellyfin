@@ -365,7 +365,7 @@ in {
                   type = types.int;
                   default = 5;
                 };
-                maxResumePct = {
+                maxResumePct = mkOption {
                   type = types.int;
                   default = 90;
                 };
@@ -373,7 +373,7 @@ in {
                   type = types.int;
                   default = 300;
                 };
-                minAudiobookResume = {
+                minAudiobookResume = mkOption {
                   type = types.int;
                   default = 5;
                 };

@@ -14,10 +14,10 @@ xml
   <?xml version="1.0" encoding="utf-8"?>
   <ServerConfiguration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
     <LogFileRetentionDays>${toString cfg.advanced.logs.logFileRetentionDays}</LogFileRetentionDays>
-    ${mkBool cfg.general.isStartupWizardCompleted "IsStartupWizardCompleted" }
+    ${mkBool cfg.general.isStartupWizardCompleted "IsStartupWizardCompleted"}
     <CachePath>${cfg.general.paths.cachePath}</CachePath>
     ${mkBool cfg.advanced.enableMetrics "EnableMetrics"}
-    ${mkBool cfg.libraries.metadata.enableNormalizedItemByNameIds "EnableNormalizedItemByNameIds" }
+    ${mkBool cfg.libraries.metadata.enableNormalizedItemByNameIds "EnableNormalizedItemByNameIds"}
     ${mkBool cfg.advanced.networking.isPortAuthorized "IsPortAuthorized"}
     ${mkBool cfg.general.quickConnectAvailable "QuickConnectAvailable"}
     ${mkBool cfg.libraries.metadata.enableCaseSensitiveItemIds "EnableCaseSensitiveItemIds"}
