@@ -472,7 +472,7 @@ in {
 
       pluginRepos = ''
         <PluginRepositories>
-        ${concatMapStringsSep "\n" mkPluginRepoInfo cfg.plugins.pluginRepositories}
+        ${concatMapStringsSep "\n" mkPluginRepoInfo cfg.settings.plugins.pluginRepositories}
         </PluginRepositories>
       '';
 
