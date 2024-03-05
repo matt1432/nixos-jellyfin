@@ -1,9 +1,10 @@
 {
   cfg,
+  lib,
   mkBool,
   mkEmptyDefault,
   mkStringArray,
-  pluginRepos,
+  mkPluginRepoInfo,
   ...
 }:
 /*
@@ -136,7 +137,9 @@ xml
     ${mkBool cfg.libraries.display.enableGroupingIntoCollections "EnableGroupingIntoCollections"}
     ${mkBool cfg.libraries.display.displaySpecialsWithinSeasons "DisplaySpecialsWithinSeasons"}
     ${mkStringArray cfg.playback.transcoding.codecsUsed "CodecsUsed"}
-    ${pluginRepos}
+    <PluginRepositories>
+      ${lib.concatMapStringsSep "\n" mkPluginRepoInfo cfg.plugins.pluginRepositories}
+    </PluginRepositories>
     ${mkBool cfg.libraries.display.enableExternalContentInSuggestions "EnableExternalContentInSuggestions"}
     <ImageExtractionTimeoutMs>${toString cfg.libraries.metadata.imageExtractionTimeoutMs}</ImageExtractionTimeoutMs>
     ${mkStringArray cfg.libraries.metadata.pathSubstitutions "PathSubstitutions"}

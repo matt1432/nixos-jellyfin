@@ -466,21 +466,15 @@ in {
         ${indent}<RepositoryInfo>
         ${indent}${indent}<Name>${repo.name}</Name>
         ${indent}${indent}<Url>${repo.url}</Url>
-        ${indent}${indent}<Enabled>${repo.enable}</Enabled>
+        ${indent}${indent}<Enabled>${boolToString repo.enable}</Enabled>
         ${indent}</RepositoryInfo>
-      '';
-
-      pluginRepos = ''
-        <PluginRepositories>
-        ${concatMapStringsSep "\n" mkPluginRepoInfo cfg.settings.plugins.pluginRepositories}
-        </PluginRepositories>
       '';
 
       importXML = file: cfg:
         pkgs.writeTextFile {
           name = "${file}.xml";
           text = import ./templates/${file}.nix {
-            inherit cfg lib mkEmptyDefault mkBool mkStringArray pluginRepos;
+            inherit cfg lib mkEmptyDefault mkBool mkStringArray mkPluginRepoInfo;
           };
         };
 
