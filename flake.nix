@@ -22,12 +22,21 @@
       ref = "v10.9.1";
       flake = false;
     };
+
+    jellyfin-ffmpeg-src = {
+      type = "github";
+      owner = "jellyfin";
+      repo = "jellyfin-ffmpeg";
+      ref = "v6.0.1-6";
+      flake = false;
+    };
   };
 
   outputs = {
     self,
     jellyfin-src,
     jellyfin-web-src,
+    jellyfin-ffmpeg-src,
     nixpkgs,
   }: let
     # TODO: see if jellyfin is supported on anything else
@@ -47,6 +56,9 @@
         inherit (self.packages.${system}) jellyfin-web;
         inherit jellyfin-src;
       };
+      jellyfin-ffmpeg = pkgs.callPackage ./pkgs/ffmpeg.nix {
+        inherit jellyfin-ffmpeg-src;
+      };
 
       # Not sure if this actually does anything
       cudaPackages = {
@@ -56,6 +68,9 @@
         jellyfin = pkgs.cudaPackages.callPackage ./pkgs {
           inherit (self.packages.${system}.cudaPackages) jellyfin-web;
           inherit jellyfin-src;
+        };
+        jellyfin-ffmpeg = pkgs.cudaPackages.callPackage ./pkgs/ffmpeg.nix {
+          inherit jellyfin-ffmpeg-src;
         };
       };
     });

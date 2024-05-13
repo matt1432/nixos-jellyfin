@@ -35,11 +35,11 @@ in {
 
     ffmpegPackage = mkOption {
       type = types.package;
-      default = pkgs.jellyfin-ffmpeg;
-      defaultText = literalExpression "pkgs.jellyfin-ffmpeg";
+      default = jellyPkgs.${pkgs.system}.jellyfin-ffmpeg;
+      defaultText = literalExpression "nixos-jellyfin.packages.x86_64-linux.jellyfin-ffmpeg";
       description = ''
         The jellyfin-ffmpeg package to use.\
-        By default, this option will use the package `pkgs.jellyfin-ffmpeg`.
+        By default, this option will use the `packages.jellyfin-ffmpeg` as exposed by this flake.
       '';
     };
 
