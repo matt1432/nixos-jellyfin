@@ -61,7 +61,7 @@
     });
 
     nixosModules = {
-      jellyfin = import ./modules;
+      jellyfin = import ./modules self.packages;
 
       default = self.nixosModules.jellyfin;
     };

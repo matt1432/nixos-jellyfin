@@ -1,4 +1,4 @@
-{
+jellyPkgs: {
   config,
   lib,
   pkgs,
@@ -8,6 +8,8 @@
     (lib)
     boolToString
     concatMapStringsSep
+    literalExpression
+    mkForce
     mkIf
     mkOption
     optionalString
@@ -20,34 +22,99 @@
   configDir = "${jellyConfig.WorkingDirectory}/config";
 in {
   options.services.jellyfin = {
+    package = mkForce (mkOption {
+      type = types.package;
+      default = jellyPkgs.${pkgs.system}.jellyfin;
+      defaultText = literalExpression "nixos-jellyfin.packages.x86_64-linux.jellyfin";
+      description = ''
+        The jellyfin package to use.\
+        By default, this option will use the `packages.jellyfin` as exposed by this flake.
+      '';
+    });
+
+    webPackage = mkOption {
+      type = types.package;
+      default = jellyPkgs.${pkgs.system}.jellyfin-web;
+      defaultText = literalExpression "nixos-jellyfin.packages.x86_64-linux.jellyfin-web";
+      description = ''
+        The jellyfin-web package to use.\
+        By default, this option will use the `packages.jellyfin-web` as exposed by this flake.
+      '';
+    };
+
+    ffmpegPackage = mkOption {
+      type = types.package;
+      default = pkgs.jellyfin-ffmpeg;
+      defaultText = literalExpression "pkgs.jellyfin-ffmpeg";
+      description = ''
+        The jellyfin-ffmpeg package to use.\
+        By default, this option will use the package `pkgs.jellyfin-ffmpeg`.
+      '';
+    };
+
+    finalPackage = mkOption {
+      type = types.package;
+      readOnly = true;
+      default =
+        (cfg.package.override {
+          jellyfin-web = cfg.webPackage;
+        })
+        .overrideAttrs (o: {
+          preInstall = ''
+            makeWrapperArgs+=(
+              --add-flags "--ffmpeg ${cfg.ffmpegPackage}/bin/ffmpeg"
+              --add-flags "--webdir ${cfg.dataDir}/share/jellyfin-web"
+            )
+          '';
+        });
+      defaultText = literalExpression ''
+        nixos-jellyfin.packages.x86_64-linux.jellyfin.override {
+          jellyfin-web = ;
+        }
+        (nixos-jellyfin.packages.x86_64-linux.jellyfin.override {
+          jellyfin-web = nixos-jellyfin.packages.x86_64-linux.jellyfin;
+        })
+        .overrideAttrs (o: {
+          preInstall = '''
+            makeWrapperArgs+=(
+              --add-flags "--ffmpeg ''${pkgs.jellyfin-ffmpeg}/bin/ffmpeg"
+              --add-flags "--webdir /var/lib/jellyfin/jellyfin-web"
+            )
+          ''';
+        })
+      '';
+      description = ''
+        The package defined by `services.jellyfin.package` with overrides applied.
+      '';
+    };
+
     settings = mkOption {
       default = null;
-      type = with types;
-        nullOr (submodule {
-          options = {
-            # Organized by config file
-            branding = import ./options/branding-options.nix {
-              inherit lib;
-            };
-
-            encoding = import ./options/encoding-options.nix {
-              inherit lib pkgs jellyConfig;
-              cfg = cfg.settings.encoding;
-            };
-
-            metadata = import ./options/metadata-config.nix {
-              inherit lib;
-            };
-
-            system =
-              (import ./options/server-config.nix {
-                inherit config lib jellyConfig;
-              })
-              // (import ./options/base-app-config.nix {
-                inherit lib;
-              });
+      type = types.nullOr (types.submodule {
+        options = {
+          # Organized by config file
+          branding = import ./options/branding-options.nix {
+            inherit lib;
           };
-        });
+
+          encoding = import ./options/encoding-options.nix {
+            inherit lib pkgs jellyConfig;
+            cfg = cfg.settings.encoding;
+          };
+
+          metadata = import ./options/metadata-config.nix {
+            inherit lib;
+          };
+
+          system =
+            (import ./options/server-config.nix {
+              inherit config lib jellyConfig;
+            })
+            // (import ./options/base-app-config.nix {
+              inherit lib;
+            });
+        };
+      });
     };
   };
 
@@ -120,6 +187,11 @@ in {
       serviceConfig.WorkingDirectory = configDir;
 
       script = ''
+        # Make jellyfin-web read/write
+        rm -r ${cfg.dataDir}/jellyfin-web
+        cp -r ${cfg.jellyWeb}/share/jellyfin-web ${cfg.dataDir}
+        chmod 600 -R ${cfg.dataDir}/jellyfin-web
+
         backupFile() {
             if [ -w "$1" ]; then
                 rm -f "$1.bak"
