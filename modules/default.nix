@@ -110,7 +110,7 @@ in {
     systemd.services."jellyfin" = {
       restartTriggers = [(builtins.toJSON cfg.settings)];
       serviceConfig = {
-        ExecStart = "${cfg.package}/bin/jellyfin --datadir '${cfg.dataDir}' --configdir '${cfg.configDir}' --cachedir '${cfg.cacheDir}' --logdir '${cfg.logDir}'";
+        ExecStart = "${cfg.finalPackage}/bin/jellyfin --datadir '${cfg.dataDir}' --configdir '${cfg.configDir}' --cachedir '${cfg.cacheDir}' --logdir '${cfg.logDir}'";
       };
     };
 
