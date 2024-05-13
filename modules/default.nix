@@ -107,7 +107,12 @@ in {
   config = mkIf (cfg.enable && cfg.settings != null) {
     services.jellyfin.package = mkDefault jellyPkgs.${pkgs.system}.jellyfin;
 
-    systemd.services."jellyfin".restartTriggers = [(builtins.toJSON cfg.settings)];
+    systemd.services."jellyfin" = {
+      restartTriggers = [(builtins.toJSON cfg.settings)];
+      serviceConfig = {
+        ExecStart = "${cfg.package}/bin/jellyfin --datadir '${cfg.dataDir}' --configdir '${cfg.configDir}' --cachedir '${cfg.cacheDir}' --logdir '${cfg.logDir}'";
+      };
+    };
 
     systemd.services."jellyfin-conf" = let
       mkEmptyDefault = opt: name:
