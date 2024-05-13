@@ -50,7 +50,7 @@ in {
         preInstall = ''
           makeWrapperArgs+=(
             --add-flags "--ffmpeg ${cfg.ffmpegPackage}/bin/ffmpeg"
-            --add-flags "--webdir ${cfg.dataDir}/share/jellyfin-web"
+            --add-flags "--webdir ${cfg.dataDir}/jellyfin-web"
           )
         '';
       });
