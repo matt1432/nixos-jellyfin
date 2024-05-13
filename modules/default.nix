@@ -9,6 +9,7 @@ jellyPkgs: {
     boolToString
     concatMapStringsSep
     literalExpression
+    mkDefault
     mkIf
     mkOption
     optionalString
@@ -21,16 +22,6 @@ jellyPkgs: {
   configDir = "${jellyConfig.WorkingDirectory}/config";
 in {
   options.services.jellyfin = {
-    package = mkOption {
-      type = types.package;
-      default = jellyPkgs.${pkgs.system}.jellyfin;
-      defaultText = literalExpression "nixos-jellyfin.packages.x86_64-linux.jellyfin";
-      description = ''
-        The jellyfin package to use.\
-        By default, this option will use the `packages.jellyfin` as exposed by this flake.
-      '';
-    };
-
     webPackage = mkOption {
       type = types.package;
       default = jellyPkgs.${pkgs.system}.jellyfin-web;
@@ -118,6 +109,8 @@ in {
   };
 
   config = mkIf (cfg.enable && cfg.settings != null) {
+    services.jellyfin.package = mkDefault jellyPkgs.${pkgs.system}.jellyfin;
+
     systemd.services."jellyfin".restartTriggers = [(builtins.toJSON cfg.settings)];
 
     systemd.services."jellyfin-conf" = let
