@@ -185,6 +185,7 @@ in {
         rm -rf ${cfg.dataDir}/jellyfin-web
         cp -r ${cfg.webPackage}/share/jellyfin-web ${cfg.dataDir}
         chmod 600 -R ${cfg.dataDir}/jellyfin-web
+        chown ${cfg.user}:${cfg.group} -R ${cfg.dataDir}/jellyfin-web
 
         backupFile() {
             if [ -w "$1" ]; then
