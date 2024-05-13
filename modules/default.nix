@@ -10,6 +10,7 @@ jellyPkgs: {
     concatMapStringsSep
     literalExpression
     mkDefault
+    mkForce
     mkIf
     mkOption
     optionalString
@@ -110,7 +111,7 @@ in {
     systemd.services."jellyfin" = {
       restartTriggers = [(builtins.toJSON cfg.settings)];
       serviceConfig = {
-        ExecStart = "${cfg.finalPackage}/bin/jellyfin --datadir '${cfg.dataDir}' --configdir '${cfg.configDir}' --cachedir '${cfg.cacheDir}' --logdir '${cfg.logDir}'";
+        ExecStart = mkForce "${cfg.finalPackage}/bin/jellyfin --datadir '${cfg.dataDir}' --configdir '${cfg.configDir}' --cachedir '${cfg.cacheDir}' --logdir '${cfg.logDir}'";
       };
     };
 
