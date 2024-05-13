@@ -1,4 +1,5 @@
 {
+  chromaprint,
   ffmpeg_6-full,
   fetchpatch,
   lib,
@@ -22,11 +23,14 @@ in
       })
     ];
 
+    buildInputs = old.buildInputs ++ [chromaprint];
+
     configureFlags =
       old.configureFlags
       ++ [
         "--extra-version=Jellyfin"
         "--disable-ptx-compression" # https://github.com/jellyfin/jellyfin/issues/7944#issuecomment-1156880067
+        "--enable-chromaprint"
       ];
 
     postPatch = ''
