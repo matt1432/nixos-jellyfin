@@ -9,7 +9,6 @@ jellyPkgs: {
     boolToString
     concatMapStringsSep
     literalExpression
-    mkForce
     mkIf
     mkOption
     optionalString
@@ -22,7 +21,7 @@ jellyPkgs: {
   configDir = "${jellyConfig.WorkingDirectory}/config";
 in {
   options.services.jellyfin = {
-    package = mkForce (mkOption {
+    package = mkOption {
       type = types.package;
       default = jellyPkgs.${pkgs.system}.jellyfin;
       defaultText = literalExpression "nixos-jellyfin.packages.x86_64-linux.jellyfin";
@@ -30,7 +29,7 @@ in {
         The jellyfin package to use.\
         By default, this option will use the `packages.jellyfin` as exposed by this flake.
       '';
-    });
+    };
 
     webPackage = mkOption {
       type = types.package;
