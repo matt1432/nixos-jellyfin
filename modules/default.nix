@@ -181,7 +181,7 @@ in {
       script = ''
         # Make jellyfin-web read/write
         rm -r ${cfg.dataDir}/jellyfin-web
-        cp -r ${cfg.jellyWeb}/share/jellyfin-web ${cfg.dataDir}
+        cp -r ${cfg.webPackage}/share/jellyfin-web ${cfg.dataDir}
         chmod 600 -R ${cfg.dataDir}/jellyfin-web
 
         backupFile() {
