@@ -205,12 +205,13 @@ in {
         chown jellyfin:jellyfin -R "${configDir}"
       '';
 
+      wantedBy = "jellyfin.target";
+
       serviceConfig = {
         WorkingDirectory = configDir;
         Type = "simple";
-        RemainAfterExit = true;
-        Restart = false;
-        WantedBy = "jellyfin.target";
+        RemainAfterExit = "yes";
+        Restart = "no";
       };
     };
 
@@ -224,10 +225,10 @@ in {
           "--cachedir '${cfg.cacheDir}'"
           "--logdir '${cfg.logDir}'"
         ]);
-        After = "jellyfin-conf.service";
-        Requires = "jellyfin-conf.service";
-        RequiredBy = "jellyfin.target";
       };
+      after = "jellyfin-conf.service";
+      requiredBy = "jellyfin.target";
+      requires = "jellyfin-conf.service";
     };
   };
 }
