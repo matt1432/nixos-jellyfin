@@ -205,7 +205,7 @@ in {
         chown jellyfin:jellyfin -R "${configDir}"
       '';
 
-      wantedBy = "jellyfin.target";
+      wantedBy = ["jellyfin.target"];
 
       serviceConfig = {
         WorkingDirectory = configDir;
@@ -226,9 +226,9 @@ in {
           "--logdir '${cfg.logDir}'"
         ]);
       };
-      after = "jellyfin-conf.service";
-      requiredBy = "jellyfin.target";
-      requires = "jellyfin-conf.service";
+      after = ["jellyfin-conf.service"];
+      requiredBy = ["jellyfin.target"];
+      requires = ["jellyfin-conf.service"];
     };
   };
 }
