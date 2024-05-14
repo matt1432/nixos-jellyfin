@@ -176,8 +176,8 @@ in {
         # Make jellyfin-web read/write
         rm -rf ${cfg.dataDir}/jellyfin-web
         cp -r ${cfg.webPackage}/share/jellyfin-web ${cfg.dataDir}
-        chmod 770 -R ${cfg.dataDir}/jellyfin-web
-        chown ${cfg.user}:${cfg.group} -R ${cfg.dataDir}/jellyfin-web
+        chmod 770 -R ${cfg.dataDir}
+        chown ${cfg.user}:${cfg.group} -R ${cfg.dataDir}
 
         backupFile() {
             if [ -w "$1" ]; then
@@ -206,6 +206,7 @@ in {
       '';
 
       wantedBy = ["jellyfin.target"];
+      partOf = ["jellyfin.service"];
 
       serviceConfig = {
         WorkingDirectory = configDir;
