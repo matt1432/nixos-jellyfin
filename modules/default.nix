@@ -46,19 +46,22 @@ in {
     finalPackage = mkOption {
       type = types.package;
       readOnly = true;
-      default = cfg.package.overrideAttrs (o: {
-        preInstall = ''
-          makeWrapperArgs+=(
-            --add-flags "--ffmpeg ${cfg.ffmpegPackage}/bin/ffmpeg"
-            --add-flags "--webdir ${cfg.dataDir}/jellyfin-web"
-          )
-        '';
-      });
+      default =
+        (cfg.package.override {
+          ffmpeg = cfg.ffmpegPackage;
+          jellyfin-web = cfg.webPackage;
+        })
+        .overrideAttrs (o: {
+          preInstall = ''
+            makeWrapperArgs+=(
+              --add-flags "--ffmpeg ${cfg.ffmpegPackage}/bin/ffmpeg"
+              --add-flags "--webdir ${cfg.dataDir}/jellyfin-web"
+            )
+          '';
+        });
       defaultText = literalExpression ''
-        nixos-jellyfin.packages.x86_64-linux.jellyfin.override {
-          jellyfin-web = ;
-        }
         (nixos-jellyfin.packages.x86_64-linux.jellyfin.override {
+          ffmpeg = pkgs.jellyfin-ffmpeg;
           jellyfin-web = nixos-jellyfin.packages.x86_64-linux.jellyfin;
         })
         .overrideAttrs (o: {
