@@ -7,6 +7,7 @@ jellyPkgs: {
   inherit
     (lib)
     boolToString
+    concatStringsSep
     concatMapStringsSep
     literalExpression
     mkDefault
@@ -111,13 +112,6 @@ in {
   config = mkIf (cfg.enable && cfg.settings != null) {
     services.jellyfin.package = mkDefault jellyPkgs.${pkgs.system}.jellyfin;
 
-    systemd.services."jellyfin" = {
-      restartTriggers = [(builtins.toJSON cfg.settings)];
-      serviceConfig = {
-        ExecStart = mkForce "${cfg.finalPackage}/bin/jellyfin --datadir '${cfg.dataDir}' --configdir '${cfg.configDir}' --cachedir '${cfg.cacheDir}' --logdir '${cfg.logDir}'";
-      };
-    };
-
     systemd.services."jellyfin-conf" = let
       mkEmptyDefault = opt: name:
         if isNull opt
@@ -178,11 +172,6 @@ in {
       metadataFile = importXML "metadata" cfg.settings.metadata;
       systemFile = importXML "system" cfg.settings.system;
     in {
-      before = ["jellyfin.service"];
-      requiredBy = ["jellyfin.service"];
-
-      serviceConfig.WorkingDirectory = configDir;
-
       script = ''
         # Make jellyfin-web read/write
         rm -rf ${cfg.dataDir}/jellyfin-web
@@ -214,9 +203,31 @@ in {
         chmod 600 "${configDir}/metadata.xml"
 
         chown jellyfin:jellyfin -R "${configDir}"
-
-        /run/current-system/systemd/bin/systemctl restart jellyfin.service
       '';
+
+      serviceConfig = {
+        WorkingDirectory = configDir;
+        Type = "simple";
+        RemainAfterExit = true;
+        Restart = false;
+        WantedBy = "jellyfin.target";
+      };
+    };
+
+    systemd.services."jellyfin" = {
+      restartTriggers = [(builtins.toJSON cfg.settings)];
+      serviceConfig = {
+        ExecStart = mkForce (concatStringsSep " " [
+          "${cfg.finalPackage}/bin/jellyfin"
+          "--datadir '${cfg.dataDir}'"
+          "--configdir '${cfg.configDir}'"
+          "--cachedir '${cfg.cacheDir}'"
+          "--logdir '${cfg.logDir}'"
+        ]);
+        After = "jellyfin-conf.service";
+        Requires = "jellyfin-conf.service";
+        RequiredBy = "jellyfin.target";
+      };
     };
   };
 }
