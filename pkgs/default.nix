@@ -11,7 +11,14 @@
 }:
 buildDotnetModule rec {
   pname = "jellyfin";
-  version = "10.9.1"; # ensure that jellyfin-web has matching version
+  version =
+    lib.removePrefix
+    "v"
+    ((builtins.fromJSON (builtins.readFile ../flake.lock))
+      .nodes
+      .jellyfin-src
+      .original
+      .ref);
 
   src = jellyfin-src;
 

@@ -5,7 +5,14 @@
   lib,
   jellyfin-ffmpeg-src,
 }: let
-  version = "6.0.1-6";
+  version =
+    lib.removePrefix
+    "v"
+    ((builtins.fromJSON (builtins.readFile ../flake.lock))
+      .nodes
+      .jellyfin-ffmpeg-src
+      .original
+      .ref);
 in
   (ffmpeg_6-full.override {
     inherit version; # Important! This sets the ABI.
