@@ -90,7 +90,7 @@ in {
 
           encoding = import ./options/encoding-options.nix {
             inherit lib jellyConfig;
-            ffmpeg = cfg.jellyfin-ffmpeg;
+            ffmpeg = cfg.ffmpegPackage;
             cfg = cfg.settings.encoding;
           };
 
