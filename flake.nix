@@ -6,37 +6,10 @@
       repo = "nixpkgs";
       ref = "nixos-unstable";
     };
-
-    jellyfin-src = {
-      type = "github";
-      owner = "jellyfin";
-      repo = "jellyfin";
-      ref = "v10.9.3";
-      flake = false;
-    };
-
-    jellyfin-web-src = {
-      type = "github";
-      owner = "jellyfin";
-      repo = "jellyfin-web";
-      ref = "v10.9.3";
-      flake = false;
-    };
-
-    jellyfin-ffmpeg-src = {
-      type = "github";
-      owner = "jellyfin";
-      repo = "jellyfin-ffmpeg";
-      ref = "v6.0.1-7";
-      flake = false;
-    };
   };
 
   outputs = {
     self,
-    jellyfin-src,
-    jellyfin-web-src,
-    jellyfin-ffmpeg-src,
     nixpkgs,
   }: let
     # TODO: see if jellyfin is supported on anything else
@@ -48,32 +21,10 @@
       in
         attrs system pkgs);
   in {
-    packages = perSystem (system: pkgs: {
-      jellyfin-web = pkgs.callPackage ./pkgs/web.nix {
-        inherit jellyfin-web-src;
-      };
-      jellyfin = pkgs.callPackage ./pkgs {
-        inherit (self.packages.${system}) jellyfin-web;
-        inherit jellyfin-src;
-      };
-      jellyfin-ffmpeg = pkgs.callPackage ./pkgs/ffmpeg.nix {
-        inherit jellyfin-ffmpeg-src;
-      };
-
-      # Not sure if this actually does anything
-      cudaPackages = {
-        jellyfin-web = pkgs.cudaPackages.callPackage ./pkgs/web.nix {
-          inherit jellyfin-web-src;
-        };
-        jellyfin = pkgs.cudaPackages.callPackage ./pkgs {
-          inherit (self.packages.${system}.cudaPackages) jellyfin-web;
-          inherit jellyfin-src;
-        };
-        jellyfin-ffmpeg = pkgs.cudaPackages.callPackage ./pkgs/ffmpeg.nix {
-          inherit jellyfin-ffmpeg-src;
-        };
-      };
-    });
+    packages = perSystem (system: pkgs:
+      import ./pkgs {
+        inherit self system pkgs;
+      });
 
     nixosModules = {
       jellyfin = import ./modules self.packages;

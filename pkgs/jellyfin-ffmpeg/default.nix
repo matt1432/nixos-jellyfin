@@ -1,22 +1,17 @@
 {
   chromaprint,
-  ffmpeg_6-full,
+  fetchFromGitHub,
   fetchpatch,
+  ffmpeg_6-full,
   lib,
-  jellyfin-ffmpeg-src,
 }: let
-  version =
-    lib.removePrefix
-    "v"
-    ((builtins.fromJSON (builtins.readFile ../flake.lock))
-      .nodes
-      .jellyfin-ffmpeg-src
-      .original
-      .ref);
+  jellyfin-ffmpeg-src = import ./src.nix;
+
+  version = lib.removePrefix "v" jellyfin-ffmpeg-src.rev;
 in
   (ffmpeg_6-full.override {
     inherit version; # Important! This sets the ABI.
-    source = jellyfin-ffmpeg-src;
+    source = fetchFromGitHub jellyfin-ffmpeg-src;
   })
   .overrideAttrs (old: {
     pname = "jellyfin-ffmpeg";

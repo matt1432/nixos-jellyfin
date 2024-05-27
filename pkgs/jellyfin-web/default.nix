@@ -1,15 +1,17 @@
 {
-  lib,
-  stdenv,
-  overrideSDK,
   buildNpmPackage,
-  pkg-config,
-  xcbuild,
-  pango,
-  giflib,
   darwin,
-  jellyfin-web-src,
+  fetchFromGitHub,
+  giflib,
+  lib,
+  overrideSDK,
+  pango,
+  pkg-config,
+  stdenv,
+  xcbuild,
 }: let
+  jellyfin-web-src = import ./src.nix;
+
   # node-canvas builds code that requires aligned_alloc,
   # which on Darwin requires at least the 10.15 SDK
   stdenv' =
@@ -24,18 +26,11 @@
 in
   buildNpmPackage' {
     pname = "jellyfin-web";
-    version =
-      lib.removePrefix
-      "v"
-      ((builtins.fromJSON (builtins.readFile ../flake.lock))
-        .nodes
-        .jellyfin-web-src
-        .original
-        .ref);
+    version = lib.removePrefix "v" jellyfin-web-src.rev;
 
-    src = jellyfin-web-src;
+    src = fetchFromGitHub jellyfin-web-src;
 
-    npmDepsHash = "sha256-nKA/mR1ug1yq4+jJGhWGtAL9Zsx3KjDPqt5rkCE4LFU=";
+    npmDepsHash = import ./npmDepsHash.nix;
 
     npmBuildScript = ["build:production"];
 
