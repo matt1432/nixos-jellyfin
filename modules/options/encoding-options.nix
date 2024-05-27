@@ -7,7 +7,7 @@
   cfg,
   lib,
   jellyConfig,
-  pkgs,
+  ffmpeg,
   ...
 }: let
   inherit (lib) mdDocs mkOption types;
@@ -124,7 +124,7 @@ in {
   # TODO: add to encoding.nix
   encoderAppPath = mkOption {
     type = types.str;
-    default = "${pkgs.jellyfin-ffmpeg}/bin/ffmpeg";
+    default = "${ffmpeg}/bin/ffmpeg";
     description = mdDocs ''
       The current FFmpeg path being used by the system.
     '';

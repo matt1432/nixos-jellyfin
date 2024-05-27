@@ -62,13 +62,13 @@ in {
         });
       defaultText = literalExpression ''
         (nixos-jellyfin.packages.x86_64-linux.jellyfin.override {
-          ffmpeg = pkgs.jellyfin-ffmpeg;
+          ffmpeg = nixos-jellyfin.packages.x86_64-linux.jellyfin-ffmpeg;
           jellyfin-web = nixos-jellyfin.packages.x86_64-linux.jellyfin;
         })
         .overrideAttrs (o: {
           preInstall = '''
             makeWrapperArgs+=(
-              --add-flags "--ffmpeg ''${pkgs.jellyfin-ffmpeg}/bin/ffmpeg"
+              --add-flags "--ffmpeg ''${nixos-jellyfin.packages.x86_64-linux.jellyfin-ffmpeg}/bin/ffmpeg"
               --add-flags "--webdir /var/lib/jellyfin/jellyfin-web"
             )
           ''';
@@ -89,7 +89,8 @@ in {
           };
 
           encoding = import ./options/encoding-options.nix {
-            inherit lib pkgs jellyConfig;
+            inherit lib jellyConfig;
+            ffmpeg = cfg.jellyfin-ffmpeg;
             cfg = cfg.settings.encoding;
           };
 
