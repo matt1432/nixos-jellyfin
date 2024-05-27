@@ -35,7 +35,7 @@ in
 
     src = jellyfin-web-src;
 
-    npmDepsHash = "sha256-aN+EXHRXez26oS4Ad1d9HSBkwVKnvYQMJvJVypDCk+0=";
+    npmDepsHash = "sha256-nKA/mR1ug1yq4+jJGhWGtAL9Zsx3KjDPqt5rkCE4LFU=";
 
     npmBuildScript = ["build:production"];
 

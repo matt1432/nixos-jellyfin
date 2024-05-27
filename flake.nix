@@ -11,7 +11,7 @@
       type = "github";
       owner = "jellyfin";
       repo = "jellyfin";
-      ref = "v10.9.2";
+      ref = "v10.9.3";
       flake = false;
     };
 
@@ -19,7 +19,7 @@
       type = "github";
       owner = "jellyfin";
       repo = "jellyfin-web";
-      ref = "v10.9.2";
+      ref = "v10.9.3";
       flake = false;
     };
 
@@ -27,7 +27,7 @@
       type = "github";
       owner = "jellyfin";
       repo = "jellyfin-ffmpeg";
-      ref = "v6.0.1-6";
+      ref = "v6.0.1-7";
       flake = false;
     };
   };
