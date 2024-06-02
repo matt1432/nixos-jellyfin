@@ -73,8 +73,8 @@
   })
   (fetchNuGet {
     pname = "EFCoreSecondLevelCacheInterceptor";
-    version = "4.4.3";
-    sha256 = "04g2w7x0rqb1gl71mqh28s8drjkwmlkd94j7fg4w5sc01vzrzshw";
+    version = "4.5.0";
+    sha256 = "10jlgnqn87jfyycs7hd050mk2cxngqph2r5hciq386r7jcdqly0w";
   })
   (fetchNuGet {
     pname = "ExCSS";
@@ -158,8 +158,8 @@
   })
   (fetchNuGet {
     pname = "Microsoft.AspNetCore.Authorization";
-    version = "8.0.4";
-    sha256 = "0r41i12ilhryh7gzak1iagxa5jmvk916jh40zi6n4pdffbwk9kzc";
+    version = "8.0.6";
+    sha256 = "19wwaqp21lgvv3fy6zdkmkfgnj55knjmn0h29r68z21k83gj4ba4";
   })
   (fetchNuGet {
     pname = "Microsoft.AspNetCore.Http.Abstractions";
@@ -183,8 +183,8 @@
   })
   (fetchNuGet {
     pname = "Microsoft.AspNetCore.Metadata";
-    version = "8.0.4";
-    sha256 = "0jxvdb4ah2x8ssr01gdk1msmf0kyvvr9pwhfj6rx7a5j7cl6l6xr";
+    version = "8.0.6";
+    sha256 = "17bwqcc3h6qm1r4rwvissfhqxgdwyz3j48zqv90yks2wijrymiwn";
   })
   (fetchNuGet {
     pname = "Microsoft.Bcl.AsyncInterfaces";
@@ -228,13 +228,13 @@
   })
   (fetchNuGet {
     pname = "Microsoft.Data.Sqlite";
-    version = "8.0.4";
-    sha256 = "1d41r78blfh3i0lh27bh4vrdd26ix6r63xa74cycjnc7pr98xaqc";
+    version = "8.0.6";
+    sha256 = "17h6jhhaagdhk1ljyjgxsqq168xw7yda5ys1sxls7nqkbrq3an5p";
   })
   (fetchNuGet {
     pname = "Microsoft.Data.Sqlite.Core";
-    version = "8.0.4";
-    sha256 = "03i9b45n2vnsv4wdsk6qvjzj1ga2hcli168liyrqfa87l54skckd";
+    version = "8.0.6";
+    sha256 = "0sifqhm9myix618a77w5h4v66da9dgq0aabgqrics30bpmnh219j";
   })
   (fetchNuGet {
     pname = "Microsoft.EntityFrameworkCore";
@@ -243,8 +243,8 @@
   })
   (fetchNuGet {
     pname = "Microsoft.EntityFrameworkCore";
-    version = "8.0.4";
-    sha256 = "14a74ssvklpv9v1x023mfv3a5dncwfpw399larfp9qx7l6ifsjly";
+    version = "8.0.6";
+    sha256 = "0q9j6qqns82c99imkqaw1ngq0x19flbm1p9wc92b0l46n3lz7lsg";
   })
   (fetchNuGet {
     pname = "Microsoft.EntityFrameworkCore.Abstractions";
@@ -253,8 +253,8 @@
   })
   (fetchNuGet {
     pname = "Microsoft.EntityFrameworkCore.Abstractions";
-    version = "8.0.4";
-    sha256 = "1xs1cs29csnbahxgikc094xr878i8wp4h4n84xffaxms6wx5c1fb";
+    version = "8.0.6";
+    sha256 = "0zq9hcajib3b2j5xn7qllfq2x9g6xh9s8rap03r729llsl1hims5";
   })
   (fetchNuGet {
     pname = "Microsoft.EntityFrameworkCore.Analyzers";
@@ -263,33 +263,33 @@
   })
   (fetchNuGet {
     pname = "Microsoft.EntityFrameworkCore.Analyzers";
-    version = "8.0.4";
-    sha256 = "1h2bdh7cyw2z71brwjfirayd56rp3d2dx4qrhmsw573mb5jgvara";
+    version = "8.0.6";
+    sha256 = "17r858s69mar0k70zqf0r2cp7k7sc06xazml0ncgacglw9l9ydb9";
   })
   (fetchNuGet {
     pname = "Microsoft.EntityFrameworkCore.Design";
-    version = "8.0.4";
-    sha256 = "1ni5qkjgarcjbqvw9cx0481fc99nna7rnp7170wq650jwm0f8c2f";
+    version = "8.0.6";
+    sha256 = "01068bb6sbcpngmaracwfynjqny07985hc0lzn6b1xgm1dw1vx5j";
   })
   (fetchNuGet {
     pname = "Microsoft.EntityFrameworkCore.Relational";
-    version = "8.0.4";
-    sha256 = "17v2wm6wwsl169sq6lawxhn9wvd299n1hdrxih8c3lzvi8igy4sd";
+    version = "8.0.6";
+    sha256 = "1p55h0w30gxvnbq312pbivwss5la86zz7nmfa9wvskdp5b6y8rwp";
   })
   (fetchNuGet {
     pname = "Microsoft.EntityFrameworkCore.Sqlite";
-    version = "8.0.4";
-    sha256 = "0h9ib00k54jmsrbhipr33q3sqd3mdiw31qi4g8vak1slal9b70zw";
+    version = "8.0.6";
+    sha256 = "1nmjszjkyk7nkmwn5yfmci1im9mlqxa4in75wi4sr6g145wvrgwi";
   })
   (fetchNuGet {
     pname = "Microsoft.EntityFrameworkCore.Sqlite.Core";
-    version = "8.0.4";
-    sha256 = "0pa0xz96g2f99yj3x3hfj362br3zjcx3qd89ckqmymqpvnhk4bw0";
+    version = "8.0.6";
+    sha256 = "181lp36mh96rix1f8zl0061p2m37ksw7dnj9r384n1cxw1961dg2";
   })
   (fetchNuGet {
     pname = "Microsoft.EntityFrameworkCore.Tools";
-    version = "8.0.4";
-    sha256 = "0r872j78cn1lknw3q9ajc4045d0pw879w2gp2a0qij0r9izlzpiv";
+    version = "8.0.6";
+    sha256 = "1p8mr096p3xmdw3yphkjdy5dikbh9gfvgvc43nxbzkjp9ib447hz";
   })
   (fetchNuGet {
     pname = "Microsoft.Extensions.ApiDescription.Server";
@@ -438,18 +438,18 @@
   })
   (fetchNuGet {
     pname = "Microsoft.Extensions.Diagnostics.HealthChecks";
-    version = "8.0.4";
-    sha256 = "16jm0jkb4nhx3dvqg9yljkmg95v4awpc3dkn1qqcb8bbr6szskr1";
+    version = "8.0.6";
+    sha256 = "1i3in42rrxa3wdqwya0xfx520xck3z2jasn2shvjnrakjdhlqbjd";
   })
   (fetchNuGet {
     pname = "Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions";
-    version = "8.0.4";
-    sha256 = "1iylfqpqpiknywfzka2zibz0vmrrf73y6g5irl57parxxb836yhy";
+    version = "8.0.6";
+    sha256 = "1h1yraw6571v0ricw3c331isc59k5ry1cwvh27rqs04ainh982zh";
   })
   (fetchNuGet {
     pname = "Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore";
-    version = "8.0.4";
-    sha256 = "0mxxms7nf9sm8iwf6n4ny9ni7ap7gya74wahmwcpv1v0dgq004z6";
+    version = "8.0.6";
+    sha256 = "1xyk3b2r87372m47hzwpmwx6zza3b4qd4cliyd7ki0z8yz7hhfda";
   })
   (fetchNuGet {
     pname = "Microsoft.Extensions.FileProviders.Abstractions";
@@ -1098,8 +1098,8 @@
   })
   (fetchNuGet {
     pname = "Swashbuckle.AspNetCore.ReDoc";
-    version = "6.5.0";
-    sha256 = "1fr8367107ammy0b887ypy14qnqqyd3nbj6agrhrhrrlz47h3v5z";
+    version = "6.6.2";
+    sha256 = "1sk1afdi1pangvx9vhjicr5h3nv3ms937311s1s8svvsn4cz0pn1";
   })
   (fetchNuGet {
     pname = "Swashbuckle.AspNetCore.Swagger";
