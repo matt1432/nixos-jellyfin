@@ -69,7 +69,7 @@ nix flake update
 updateSources
 updateNpmDepsHash
 
-eval "$(nix build .#jellyfin.fetch-deps --no-link) ./pkgs/jellyfin/nuget-deps.nix"
+$(nix build .#jellyfin.fetch-deps --print-out-paths --no-link) ./pkgs/jellyfin/nuget-deps.nix
 
 # TODO: make better message
 git_push "ci: update everything"
