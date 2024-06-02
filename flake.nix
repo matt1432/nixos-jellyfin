@@ -35,9 +35,16 @@
     formatter = perSystem (_: pkgs: pkgs.alejandra);
 
     devShells = perSystem (_: pkgs: {
-      default = pkgs.mkShell {
+      update = pkgs.mkShell {
         packages = with pkgs; [
           alejandra
+          bash
+          common-updater-scripts
+          git
+          jq
+          nix-prefetch-git
+          nix-prefetch-github
+          nix-prefetch-scripts
         ];
       };
     });
