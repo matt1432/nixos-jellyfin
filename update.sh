@@ -1,5 +1,21 @@
 #!/usr/bin/env -S nix shell -I nixpkgs=./. nixpkgs#bash nixpkgs#common-updater-scripts nixpkgs#git nixpkgs#jq nixpkgs#nix-prefetch-github nixpkgs#prefetch-npm-deps -c bash
 
+ROOT_DIR="$(pwd)"
+
+git_push() {
+    (
+        cd "$ROOT_DIR" || return
+        git config --global user.name 'Updater'
+        git config --global user.email 'robot@nowhere.invalid'
+        git remote update
+
+        git add .
+
+        git commit -m "$1"
+        git push
+    )
+}
+
 updateGithubSrc() {
     owner="$1"
     repo="$2"
@@ -52,3 +68,8 @@ updateNpmDepsHash() {
 nix flake update
 updateSources
 updateNpmDepsHash
+
+eval "$(nix build .#jellyfin.fetch-deps --no-link) ./pkgs/jellyfin/nuget-deps.nix"
+
+# TODO: make better message
+git_push "ci: update everything"

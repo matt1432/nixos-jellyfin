@@ -1,0 +1,16 @@
+name: "Update"
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 7 * * *'
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: setup-nix
+      uses: cachix/install-nix-action@v25
+      with:
+        github_access_token: ${{ secrets.GITHUB_TOKEN }}
+    - name: update
+      run: ./update.sh
