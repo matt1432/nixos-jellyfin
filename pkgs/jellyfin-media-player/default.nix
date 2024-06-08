@@ -63,6 +63,7 @@ in
       ninja
       pkg-config
       python3
+      qt5.wrapQtAppsHook
     ];
 
     cmakeFlags =
