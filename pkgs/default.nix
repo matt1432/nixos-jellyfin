@@ -4,7 +4,9 @@
   system,
   ...
 }: {
-  jellyfin-web = pkgs.callPackage ./jellyfin-web {};
+  jellyfin-web = pkgs.callPackage ./jellyfin-web {
+    inherit (self.packages.${system}) jellyfin;
+  };
 
   jellyfin = pkgs.callPackage ./jellyfin {
     inherit (self.packages.${system}) jellyfin-web;

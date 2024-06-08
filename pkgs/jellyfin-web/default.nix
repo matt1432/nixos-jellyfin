@@ -3,6 +3,7 @@
   darwin,
   fetchFromGitHub,
   giflib,
+  jellyfin,
   lib,
   overrideSDK,
   pango,
@@ -10,6 +11,8 @@
   stdenv,
   xcbuild,
 }: let
+  inherit (lib) optionals removePrefix;
+
   jellyfin-web-src = import ./src.nix;
 
   # node-canvas builds code that requires aligned_alloc,
@@ -24,21 +27,22 @@
     else stdenv;
   buildNpmPackage' = buildNpmPackage.override {stdenv = stdenv';};
 in
-  buildNpmPackage' {
+  buildNpmPackage' rec {
     pname = "jellyfin-web";
-    version = lib.removePrefix "v" jellyfin-web-src.rev;
+    version = removePrefix "v" jellyfin-web-src.rev;
 
-    src = fetchFromGitHub jellyfin-web-src;
+    src = assert version == jellyfin.version;
+      fetchFromGitHub jellyfin-web-src;
 
     npmDepsHash = import ./npmDepsHash.nix;
 
     npmBuildScript = ["build:production"];
 
-    nativeBuildInputs = [pkg-config] ++ lib.optionals stdenv.isDarwin [xcbuild];
+    nativeBuildInputs = [pkg-config] ++ optionals stdenv.isDarwin [xcbuild];
 
     buildInputs =
       [pango]
-      ++ lib.optionals stdenv.isDarwin [
+      ++ optionals stdenv.isDarwin [
         giflib
         darwin.apple_sdk.frameworks.CoreText
       ];

@@ -20,11 +20,13 @@
   jellyfin-web,
   withDbus ? stdenv.isLinux,
 }: let
+  inherit (lib) optionals optionalString removePrefix;
+
   jellyfin-media-player-src = import ./src.nix;
 in
   stdenv.mkDerivation {
     pname = "jellyfin-media-player";
-    version = lib.removePrefix "v" jellyfin-media-player-src.rev;
+    version = removePrefix "v" jellyfin-media-player-src.rev;
 
     src = fetchFromGitHub jellyfin-media-player-src;
 
@@ -48,10 +50,10 @@ in
         qt5.qtwebengine
         qt5.qtx11extras
       ]
-      ++ lib.optionals stdenv.isLinux [
+      ++ optionals stdenv.isLinux [
         qt5.qtwayland
       ]
-      ++ lib.optionals stdenv.isDarwin [
+      ++ optionals stdenv.isDarwin [
         Cocoa
         CoreAudio
         CoreFoundation
@@ -71,7 +73,7 @@ in
         "-DQTROOT=${qt5.qtbase}"
         "-GNinja"
       ]
-      ++ lib.optionals (!withDbus) [
+      ++ optionals (!withDbus) [
         "-DLINUX_X11POWER=ON"
       ];
 
@@ -80,7 +82,7 @@ in
       ln -s ${jellyfin-web}/share/jellyfin-web .
     '';
 
-    postInstall = lib.optionalString stdenv.isDarwin ''
+    postInstall = optionalString stdenv.isDarwin ''
       mkdir -p $out/bin $out/Applications
       mv "$out/Jellyfin Media Player.app" $out/Applications
 
