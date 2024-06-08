@@ -1,7 +1,6 @@
 {
   lib,
   fetchFromGitHub,
-  mkDerivation,
   stdenv,
   Cocoa ? null,
   CoreAudio ? null,
@@ -17,17 +16,13 @@
   ninja,
   pkg-config,
   python3,
-  qtbase,
-  qtwayland,
-  qtwebchannel,
-  qtwebengine,
-  qtx11extras,
+  qt5,
   jellyfin-web,
   withDbus ? stdenv.isLinux,
 }: let
   jellyfin-media-player-src = import ./src.nix;
 in
-  mkDerivation {
+  stdenv.mkDerivation {
     pname = "jellyfin-media-player";
     version = lib.removePrefix "v" jellyfin-media-player-src.rev;
 
@@ -48,13 +43,13 @@ in
         libXrandr
         libvdpau
         mpv
-        qtbase
-        qtwebchannel
-        qtwebengine
-        qtx11extras
+        qt5.qtbase
+        qt5.qtwebchannel
+        qt5.qtwebengine
+        qt5.qtx11extras
       ]
       ++ lib.optionals stdenv.isLinux [
-        qtwayland
+        qt5.qtwayland
       ]
       ++ lib.optionals stdenv.isDarwin [
         Cocoa
@@ -72,7 +67,7 @@ in
 
     cmakeFlags =
       [
-        "-DQTROOT=${qtbase}"
+        "-DQTROOT=${qt5.qtbase}"
         "-GNinja"
       ]
       ++ lib.optionals (!withDbus) [
