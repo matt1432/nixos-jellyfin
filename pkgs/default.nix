@@ -12,6 +12,10 @@
 
   jellyfin-ffmpeg = pkgs.callPackage ./jellyfin-ffmpeg {};
 
+  jellyfin-media-player = pkgs.callPackage ./jellyfin-media-player {
+    inherit (self.packages.${system}) jellyfin-web;
+  };
+
   # Not sure if this actually does anything
   cudaPackages = {
     jellyfin-web = pkgs.cudaPackages.callPackage ./jellyfin-web {};

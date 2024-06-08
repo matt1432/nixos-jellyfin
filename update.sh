@@ -80,3 +80,4 @@ updateFlakeLock
 updatePackage "jellyfin" "jellyfin"
 updatePackage "jellyfin" "jellyfin-ffmpeg"
 updatePackage "jellyfin" "jellyfin-web"
+updatePackage "jellyfin" "jellyfin-media-player"
