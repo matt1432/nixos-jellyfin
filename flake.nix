@@ -12,19 +12,20 @@
     self,
     nixpkgs,
   }: let
-    # TODO: see if jellyfin is supported on anything else
-    supportedSystems = ["x86_64-linux"];
+    supportedSystems = [
+      "x86_64-linux"
+      "x86_64-darwin"
+      "aarch64-linux"
+      "aarch64-darwin"
+    ];
 
     perSystem = attrs:
-      nixpkgs.lib.genAttrs supportedSystems (system: let
-        pkgs = nixpkgs.legacyPackages.${system};
-      in
-        attrs system pkgs);
+      nixpkgs.lib.genAttrs supportedSystems (system:
+        attrs system nixpkgs.legacyPackages.${system});
   in {
-    packages = perSystem (system: pkgs:
-      import ./pkgs {
-        inherit self system pkgs;
-      });
+    packages =
+      perSystem (system: pkgs:
+        import ./pkgs {inherit self system pkgs;});
 
     nixosModules = {
       jellyfin = import ./modules self.packages;
