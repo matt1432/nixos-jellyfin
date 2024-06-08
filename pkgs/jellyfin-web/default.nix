@@ -3,7 +3,6 @@
   darwin,
   fetchFromGitHub,
   giflib,
-  jellyfin,
   lib,
   overrideSDK,
   pango,
@@ -14,6 +13,7 @@
   inherit (lib) optionals removePrefix;
 
   jellyfin-web-src = import ./src.nix;
+  jellyfin-src = import ../jellyfin/src.nix;
 
   # node-canvas builds code that requires aligned_alloc,
   # which on Darwin requires at least the 10.15 SDK
@@ -27,11 +27,11 @@
     else stdenv;
   buildNpmPackage' = buildNpmPackage.override {stdenv = stdenv';};
 in
-  buildNpmPackage' rec {
+  buildNpmPackage' {
     pname = "jellyfin-web";
     version = removePrefix "v" jellyfin-web-src.rev;
 
-    src = assert version == jellyfin.version;
+    src = assert jellyfin-web-src.rev == jellyfin-src.rev;
       fetchFromGitHub jellyfin-web-src;
 
     npmDepsHash = import ./npmDepsHash.nix;
