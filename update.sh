@@ -1,20 +1,25 @@
 #!/usr/bin/env -S nix develop .#update -c bash
 
+COMMIT="$1"
 ROOT_DIR="$(pwd)"
 
 git_push() {
-    (
-        cd "$ROOT_DIR" || return
-        git config --global user.name 'Updater'
-        git config --global user.email 'robot@nowhere.invalid'
-        git remote update
+    if [[ "$COMMIT" == "--commit" ]]; then
+        (
+            cd "$ROOT_DIR" || return
+            git config --global user.name 'Updater'
+            git config --global user.email 'robot@nowhere.invalid'
+            git remote update
 
-        alejandra .
-        git add .
+            alejandra .
+            git add .
 
-        git commit -m "$1"
-        git push
-    )
+            git commit -m "$1"
+            git push
+        )
+    else
+        echo "$1"
+    fi
 }
 
 updateFlakeLock() {
@@ -23,7 +28,7 @@ updateFlakeLock() {
 }
 
 updateNpmDepsHash() {
-    file="./pkgs/jellyfin-web/npmDepsHash.nix"
+    file="$ROOT_DIR/pkgs/jellyfin-web/npmDepsHash.nix"
     npm_hash="$(nix build .#jellyfin-web |& sed -n 's/.*got: *//p')"
 
     if [[ "$npm_hash" != "" ]]; then
@@ -39,13 +44,13 @@ updateNpmDepsHash() {
 }
 
 updateNugetDeps() {
-    $(nix build .#jellyfin.fetch-deps --print-out-paths --no-link) ./pkgs/jellyfin/nuget-deps.nix
+    $(nix build .#jellyfin.fetch-deps --print-out-paths --no-link) "$ROOT_DIR/pkgs/jellyfin/nuget-deps.nix"
 }
 
 updatePackage() {
     owner="$1"
     repo="$2"
-    file="./pkgs/$repo/src.nix"
+    file="$ROOT_DIR/pkgs/$repo/src.nix"
 
     current_version=$(nix eval --json --file "$file" | jq -r .rev)
     new_version=$(curl -s "https://api.github.com/repos/$owner/$repo/releases/latest" | jq -r .tag_name)
@@ -78,6 +83,6 @@ updatePackage() {
 
 updateFlakeLock
 updatePackage "jellyfin" "jellyfin"
-updatePackage "jellyfin" "jellyfin-ffmpeg"
 updatePackage "jellyfin" "jellyfin-web"
+updatePackage "jellyfin" "jellyfin-ffmpeg"
 updatePackage "jellyfin" "jellyfin-media-player"
