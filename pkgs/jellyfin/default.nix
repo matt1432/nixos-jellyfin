@@ -6,7 +6,6 @@
   ffmpeg,
   fontconfig,
   freetype,
-  jellyfin-web,
   sqlite,
 }: let
   jellyfin-src = import ./src.nix;
@@ -32,13 +31,6 @@ in
     dotnet-sdk = dotnetCorePackages.sdk_8_0;
     dotnet-runtime = dotnetCorePackages.aspnetcore_8_0;
     dotnetBuildFlags = ["--no-self-contained"];
-
-    preInstall = ''
-      makeWrapperArgs+=(
-        --add-flags "--ffmpeg ${ffmpeg}/bin/ffmpeg"
-        --add-flags "--webdir ${jellyfin-web}/share/jellyfin-web"
-      )
-    '';
 
     meta = {
       description = "The Free Software Media System";

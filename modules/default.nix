@@ -47,32 +47,13 @@ in {
     finalPackage = mkOption {
       type = types.package;
       readOnly = true;
-      default =
-        (cfg.package.override {
-          ffmpeg = cfg.ffmpegPackage;
-          jellyfin-web = cfg.webPackage;
-        })
-        .overrideAttrs (o: {
-          preInstall = ''
-            makeWrapperArgs+=(
-              --add-flags "--ffmpeg ${cfg.ffmpegPackage}/bin/ffmpeg"
-              --add-flags "--webdir ${cfg.dataDir}/jellyfin-web"
-            )
-          '';
-        });
+      default = cfg.package.override {
+        ffmpeg = cfg.ffmpegPackage;
+      };
       defaultText = literalExpression ''
-        (nixos-jellyfin.packages.x86_64-linux.jellyfin.override {
+        nixos-jellyfin.packages.x86_64-linux.jellyfin.override {
           ffmpeg = nixos-jellyfin.packages.x86_64-linux.jellyfin-ffmpeg;
-          jellyfin-web = nixos-jellyfin.packages.x86_64-linux.jellyfin;
-        })
-        .overrideAttrs (o: {
-          preInstall = '''
-            makeWrapperArgs+=(
-              --add-flags "--ffmpeg ''${nixos-jellyfin.packages.x86_64-linux.jellyfin-ffmpeg}/bin/ffmpeg"
-              --add-flags "--webdir /var/lib/jellyfin/jellyfin-web"
-            )
-          ''';
-        })
+        }
       '';
       description = ''
         The package defined by `services.jellyfin.package` with overrides applied.
@@ -226,6 +207,8 @@ in {
           "--configdir '${cfg.configDir}'"
           "--cachedir '${cfg.cacheDir}'"
           "--logdir '${cfg.logDir}'"
+          "--ffmpeg '${cfg.ffmpegPackage}/bin/ffmpeg'"
+          "--webdir '${cfg.dataDir}/jellyfin-web'"
         ]);
       };
       after = ["jellyfin-conf.service"];
