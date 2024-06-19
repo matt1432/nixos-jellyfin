@@ -22,11 +22,6 @@ git_push() {
     fi
 }
 
-updateFlakeLock() {
-    nix flake update
-    git_push "chore: update flake.lock"
-}
-
 updateNpmDepsHash() {
     file="$ROOT_DIR/pkgs/jellyfin-web/npmDepsHash.nix"
     npm_hash="$(nix build .#jellyfin-web |& sed -n 's/.*got: *//p')"
@@ -48,6 +43,8 @@ updateNugetDeps() {
 }
 
 updatePackage() {
+    nix flake update
+
     owner="$1"
     repo="$2"
     file="$ROOT_DIR/pkgs/$repo/src.nix"
@@ -81,7 +78,6 @@ updatePackage() {
     fi
 }
 
-updateFlakeLock
 updatePackage "jellyfin" "jellyfin"
 updatePackage "jellyfin" "jellyfin-web"
 updatePackage "jellyfin" "jellyfin-ffmpeg"
