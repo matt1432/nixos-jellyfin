@@ -72,7 +72,7 @@ updatePackage() {
             updateNugetDeps
         fi
 
-        git_push "ci: $repo $current_version -> $new_version"
+        git_push "ci: $repo ${current_version#v} -> ${new_version#v}"
     else
         echo "$repo is already up to date"
     fi
