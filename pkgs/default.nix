@@ -1,7 +1,6 @@
 {
   pkgs,
   self,
-  system,
   ...
 }: {
   jellyfin-web = pkgs.callPackage ./jellyfin-web {};
@@ -11,7 +10,7 @@
   jellyfin-ffmpeg = pkgs.callPackage ./jellyfin-ffmpeg {};
 
   jellyfin-media-player = pkgs.callPackage ./jellyfin-media-player {
-    inherit (self.packages.${system}) jellyfin-web;
+    inherit (self.packages.${pkgs.system}) jellyfin-web;
   };
 
   # Not sure if this actually does anything

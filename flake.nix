@@ -11,6 +11,7 @@
   outputs = {
     self,
     nixpkgs,
+    ...
   }: let
     supportedSystems = [
       "x86_64-linux"
@@ -21,11 +22,11 @@
 
     perSystem = attrs:
       nixpkgs.lib.genAttrs supportedSystems (system:
-        attrs system nixpkgs.legacyPackages.${system});
+        attrs (import nixpkgs {inherit system;}));
   in {
     packages =
-      perSystem (system: pkgs:
-        import ./pkgs {inherit self system pkgs;});
+      perSystem (pkgs:
+        import ./pkgs {inherit self pkgs;});
 
     nixosModules = {
       jellyfin = import ./modules self.packages;
@@ -33,9 +34,9 @@
       default = self.nixosModules.jellyfin;
     };
 
-    formatter = perSystem (_: pkgs: pkgs.alejandra);
+    formatter = perSystem (pkgs: pkgs.alejandra);
 
-    devShells = perSystem (_: pkgs: {
+    devShells = perSystem (pkgs: {
       update = pkgs.mkShell {
         packages = with pkgs; [
           alejandra
