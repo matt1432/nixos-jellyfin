@@ -52,7 +52,7 @@ updatePackage() {
     current_version=$(nix eval --json --file "$file" | jq -r .rev)
     new_version=$(curl -s "https://api.github.com/repos/$owner/$repo/releases/latest" | jq -r .tag_name)
 
-    if [[ "$new_version" != "$current_version" ]]; then
+    if [[ "$new_version" != "null" && "$new_version" != "$current_version" ]]; then
         hash=$(nix-prefetch-github "$owner" "$repo" --rev "$new_version" | jq -r .hash)
 
         {
