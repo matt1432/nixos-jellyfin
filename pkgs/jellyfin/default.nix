@@ -16,6 +16,10 @@ in
 
     src = fetchFromGitHub jellyfin-src;
 
+    postPatch = ''
+      sed -i '1s/^/#pragma warning disable SA1201\n/' ./MediaBrowser.MediaEncoding/Encoder/EncoderValidator.cs
+    '';
+
     propagatedBuildInputs = [
       sqlite
     ];
