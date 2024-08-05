@@ -39,7 +39,10 @@ updateNpmDepsHash() {
 }
 
 updateNugetDeps() {
-    $(nix build .#jellyfin.fetch-deps --print-out-paths --no-link) "$ROOT_DIR/pkgs/jellyfin/nuget-deps.nix"
+    fetchDeps=$(nix build .#jellyfin.fetch-deps --print-out-paths --no-link)
+    deps=$($fetchDeps |& tail -n 1 | sed 's/Succesfully wrote lockfile to //')
+
+    cp -rf "$deps" "$ROOT_DIR/pkgs/jellyfin/nuget-deps.nix"
 }
 
 updatePackage() {
