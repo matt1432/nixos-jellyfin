@@ -19,6 +19,8 @@
   qt5,
   jellyfin-web,
   withDbus ? stdenv.isLinux,
+  isNvidiaWayland ? false,
+  makeWrapper,
 }: let
   inherit (lib) optionals optionalString removePrefix;
 
@@ -49,6 +51,9 @@ in
         qt5.qtwebchannel
         qt5.qtwebengine
         qt5.qtx11extras
+      ]
+      ++ optionals isNvidiaWayland [
+        makeWrapper
       ]
       ++ optionals stdenv.isLinux [
         qt5.qtwayland
@@ -82,16 +87,21 @@ in
       ln -s ${jellyfin-web}/share/jellyfin-web .
     '';
 
-    postInstall = optionalString stdenv.isDarwin ''
-      mkdir -p $out/bin $out/Applications
-      mv "$out/Jellyfin Media Player.app" $out/Applications
+    postInstall =
+      (optionalString stdenv.isDarwin ''
+        mkdir -p $out/bin $out/Applications
+        mv "$out/Jellyfin Media Player.app" $out/Applications
 
-      # move web-client resources
-      mv $out/Resources/* "$out/Applications/Jellyfin Media Player.app/Contents/Resources/"
-      rmdir $out/Resources
+        # move web-client resources
+        mv $out/Resources/* "$out/Applications/Jellyfin Media Player.app/Contents/Resources/"
+        rmdir $out/Resources
 
-      ln -s "$out/Applications/Jellyfin Media Player.app/Contents/MacOS/Jellyfin Media Player" $out/bin/jellyfinmediaplayer
-    '';
+        ln -s "$out/Applications/Jellyfin Media Player.app/Contents/MacOS/Jellyfin Media Player" $out/bin/jellyfinmediaplayer
+      '')
+      + (optionalString isNvidiaWayland ''
+        wrapProgram $out/bin/jellyfinmediaplayer \
+            --add-flags "--platform xcb"
+      '');
 
     meta = with lib; {
       homepage = "https://github.com/jellyfin/jellyfin-media-player";
