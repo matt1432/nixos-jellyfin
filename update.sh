@@ -83,5 +83,8 @@ updatePackage() {
 
 updatePackage "jellyfin" "jellyfin"
 updatePackage "jellyfin" "jellyfin-web"
-updatePackage "jellyfin" "jellyfin-ffmpeg"
 updatePackage "jellyfin" "jellyfin-media-player"
+
+# 7.0 version is NOT fully compatible with Jellyfin 10.9.z.
+# Downstream should wait until Jellyfin 10.10.z is released before upgrading to this version.
+# updatePackage "jellyfin" "jellyfin-ffmpeg"
