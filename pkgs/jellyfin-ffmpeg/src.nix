@@ -2,6 +2,6 @@
 {
   owner = "jellyfin";
   repo = "jellyfin-ffmpeg";
-  rev = "v6.0.1-8";
-  hash = "sha256-29g3BUdNcFEGjHkc/1qxOGazIfg0DLDIwoiDCI/aEKc=";
+  rev = "v7.0.2-5";
+  hash = "sha256-cqyXQNx65eLEumOoSCucNpAqShMhiPqzsKc/GjKKQOA=";
 }
