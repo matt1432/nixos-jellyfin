@@ -39,10 +39,11 @@ updateNpmDepsHash() {
 }
 
 updateNugetDeps() {
-    fetchDeps=$(nix build .#jellyfin.fetch-deps --print-out-paths --no-link)
-    deps=$($fetchDeps |& tail -n 1 | sed 's/Succesfully wrote lockfile to //')
+    depsFile="$ROOT_DIR/pkgs/jellyfin/nuget-deps.nix"
 
-    cp -rf "$deps" "$ROOT_DIR/pkgs/jellyfin/nuget-deps.nix"
+    fetchDeps=$(nix build .#jellyfin.fetch-deps --print-out-paths --no-link)
+    rm -rf "$depsFile"
+    $fetchDeps "$depsFile"
 }
 
 updatePackage() {
@@ -84,7 +85,4 @@ updatePackage() {
 updatePackage "jellyfin" "jellyfin"
 updatePackage "jellyfin" "jellyfin-web"
 updatePackage "jellyfin" "jellyfin-media-player"
-
-# 7.0 version is NOT fully compatible with Jellyfin 10.9.z.
-# Downstream should wait until Jellyfin 10.10.z is released before upgrading to this version.
-# updatePackage "jellyfin" "jellyfin-ffmpeg"
+updatePackage "jellyfin" "jellyfin-ffmpeg"
