@@ -1,6 +1,7 @@
 {
   buildNpmPackage,
   darwin,
+  dart-sass,
   fetchFromGitHub,
   giflib,
   lib,
@@ -46,6 +47,16 @@ in
         giflib
         darwin.apple_sdk.frameworks.CoreText
       ];
+
+    patches = [
+      ./commit.patch
+      ./lock.patch
+    ];
+
+    env = {
+      COMMIT_SHA = jellyfin-web-src.rev;
+      SASS_EMBEDDED_BIN_PATH = "${dart-sass}/bin/sass";
+    };
 
     installPhase = ''
       runHook preInstall
