@@ -22,6 +22,65 @@ jellyPkgs: {
   cfg = config.services.jellyfin;
   jellyConfig = config.systemd.services.jellyfin.serviceConfig;
   configDir = "${jellyConfig.WorkingDirectory}/config";
+
+  mkEmptyDefault = opt: name:
+    if isNull opt
+    then "<${name} />"
+    else "<${name}>${opt}</${name}>";
+
+  mkBool = opt: name: "<${name}>${boolToString opt}</${name}>";
+
+  indent = "  ";
+  indent2 = "${indent}${indent}";
+
+  mkStringArray = opt: name: ind:
+    if isNull opt
+    then "${optionalString ind indent2}${indent}<${name} />"
+    else ''
+      ${optionalString ind indent2}${indent}<${name}>
+      ${concatMapStringsSep "\n"
+        (x: "  ${optionalString ind indent2}${indent}<string>${x}</string>")
+        opt}
+      ${optionalString ind indent2}${indent}</${name}>'';
+
+  mkPluginRepoInfo = repo: ''
+    ${indent2}<RepositoryInfo>
+    ${indent2}${indent}<Name>${repo.name}</Name>
+    ${indent2}${indent}<Url>${repo.url}</Url>
+    ${indent2}${indent}<Enabled>${boolToString repo.enable}</Enabled>
+    ${indent2}</RepositoryInfo>'';
+
+  mkMetadataOptions = meta: ''
+    ${indent2}<MetadataOptions>
+      ${indent2}<ItemType>${meta.itemType}</ItemType>
+    ${mkStringArray meta.disabledMetadataSavers "DisabledMetadataSavers" true}
+    ${mkStringArray meta.localMetadataReaderOrder "LocalMetadataReaderOrder" true}
+    ${mkStringArray meta.disabledMetadataFetchers "DisabledMetadataFetchers" true}
+    ${mkStringArray meta.metadataFetcherOrder "MetadataFetcherOrder" true}
+    ${mkStringArray meta.disabledImageFetchers "DisabledImageFetchers" true}
+    ${mkStringArray meta.imageFetcherOrder "ImageFetcherOrder" true}
+    ${indent2}</MetadataOptions>'';
+
+  importXML = file: cfg:
+    pkgs.writeTextFile {
+      name = "${file}.xml";
+      text = import ./templates/${file}.nix {
+        inherit
+          cfg
+          lib
+          mkBool
+          mkEmptyDefault
+          mkMetadataOptions
+          mkStringArray
+          mkPluginRepoInfo
+          ;
+      };
+    };
+
+  brandingFile = importXML "branding" cfg.settings.branding;
+  encodingFile = importXML "encoding" cfg.settings.encoding;
+  metadataFile = importXML "metadata" cfg.settings.metadata;
+  systemFile = importXML "system" cfg.settings.system;
 in {
   options.services.jellyfin = {
     webPackage = mkOption {
@@ -94,67 +153,10 @@ in {
   config = mkIf (cfg.enable && cfg.settings != null) {
     services.jellyfin.package = mkDefault jellyPkgs.${pkgs.system}.jellyfin;
 
-    systemd.services."jellyfin-conf" = let
-      mkEmptyDefault = opt: name:
-        if isNull opt
-        then "<${name} />"
-        else "<${name}>${opt}</${name}>";
+    systemd.services."jellyfin" = {
+      restartTriggers = [(builtins.toJSON cfg.settings)];
 
-      mkBool = opt: name: "<${name}>${boolToString opt}</${name}>";
-
-      indent = "  ";
-      indent2 = "${indent}${indent}";
-
-      mkStringArray = opt: name: ind:
-        if isNull opt
-        then "${optionalString ind indent2}${indent}<${name} />"
-        else ''
-          ${optionalString ind indent2}${indent}<${name}>
-          ${concatMapStringsSep "\n"
-            (x: "  ${optionalString ind indent2}${indent}<string>${x}</string>")
-            opt}
-          ${optionalString ind indent2}${indent}</${name}>'';
-
-      mkPluginRepoInfo = repo: ''
-        ${indent2}<RepositoryInfo>
-        ${indent2}${indent}<Name>${repo.name}</Name>
-        ${indent2}${indent}<Url>${repo.url}</Url>
-        ${indent2}${indent}<Enabled>${boolToString repo.enable}</Enabled>
-        ${indent2}</RepositoryInfo>'';
-
-      mkMetadataOptions = meta: ''
-        ${indent2}<MetadataOptions>
-          ${indent2}<ItemType>${meta.itemType}</ItemType>
-        ${mkStringArray meta.disabledMetadataSavers "DisabledMetadataSavers" true}
-        ${mkStringArray meta.localMetadataReaderOrder "LocalMetadataReaderOrder" true}
-        ${mkStringArray meta.disabledMetadataFetchers "DisabledMetadataFetchers" true}
-        ${mkStringArray meta.metadataFetcherOrder "MetadataFetcherOrder" true}
-        ${mkStringArray meta.disabledImageFetchers "DisabledImageFetchers" true}
-        ${mkStringArray meta.imageFetcherOrder "ImageFetcherOrder" true}
-        ${indent2}</MetadataOptions>'';
-
-      importXML = file: cfg:
-        pkgs.writeTextFile {
-          name = "${file}.xml";
-          text = import ./templates/${file}.nix {
-            inherit
-              cfg
-              lib
-              mkBool
-              mkEmptyDefault
-              mkMetadataOptions
-              mkStringArray
-              mkPluginRepoInfo
-              ;
-          };
-        };
-
-      brandingFile = importXML "branding" cfg.settings.branding;
-      encodingFile = importXML "encoding" cfg.settings.encoding;
-      metadataFile = importXML "metadata" cfg.settings.metadata;
-      systemFile = importXML "system" cfg.settings.system;
-    in {
-      script = ''
+      preStart = ''
         # Make jellyfin-web read/write
         rm -rf ${cfg.dataDir}/jellyfin-web
         cp -r ${cfg.webPackage}/share/jellyfin-web ${cfg.dataDir}
@@ -187,33 +189,15 @@ in {
         chown jellyfin:jellyfin -R "${configDir}"
       '';
 
-      wantedBy = ["jellyfin.target"];
-      partOf = ["jellyfin.service"];
-
-      serviceConfig = {
-        WorkingDirectory = configDir;
-        Type = "simple";
-        RemainAfterExit = "yes";
-        Restart = "no";
-      };
-    };
-
-    systemd.services."jellyfin" = {
-      restartTriggers = [(builtins.toJSON cfg.settings)];
-      serviceConfig = {
-        ExecStart = mkForce (concatStringsSep " " [
-          "${cfg.finalPackage}/bin/jellyfin"
-          "--datadir '${cfg.dataDir}'"
-          "--configdir '${cfg.configDir}'"
-          "--cachedir '${cfg.cacheDir}'"
-          "--logdir '${cfg.logDir}'"
-          "--ffmpeg '${cfg.ffmpegPackage}/bin/ffmpeg'"
-          "--webdir '${cfg.dataDir}/jellyfin-web'"
-        ]);
-      };
-      after = ["jellyfin-conf.service"];
-      requiredBy = ["jellyfin.target"];
-      requires = ["jellyfin-conf.service"];
+      serviceConfig.ExecStart = mkForce (concatStringsSep " " [
+        "${cfg.finalPackage}/bin/jellyfin"
+        "--datadir '${cfg.dataDir}'"
+        "--configdir '${cfg.configDir}'"
+        "--cachedir '${cfg.cacheDir}'"
+        "--logdir '${cfg.logDir}'"
+        "--ffmpeg '${cfg.ffmpegPackage}/bin/ffmpeg'"
+        "--webdir '${cfg.dataDir}/jellyfin-web'"
+      ]);
     };
   };
 }
