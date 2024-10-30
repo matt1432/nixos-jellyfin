@@ -20,7 +20,6 @@ jellyPkgs: {
   inherit (builtins) isNull;
 
   cfg = config.services.jellyfin;
-  jellyConfig = config.systemd.services.jellyfin.serviceConfig;
 
   mkEmptyDefault = opt: name:
     if isNull opt
@@ -128,7 +127,8 @@ in {
           };
 
           encoding = import ./options/encoding-options.nix {
-            inherit lib jellyConfig;
+            inherit lib;
+            jellyConfig = cfg;
             ffmpeg = cfg.ffmpegPackage;
             cfg = cfg.settings.encoding;
           };
@@ -139,7 +139,8 @@ in {
 
           system =
             (import ./options/server-config.nix {
-              inherit config lib jellyConfig;
+              inherit config lib;
+              jellyConfig = cfg;
             })
             // (import ./options/base-app-config.nix {
               inherit lib;

@@ -55,7 +55,7 @@ in {
 
   metadataPath = mkOption {
     type = types.str;
-    default = "${jellyConfig.WorkingDirectory}/metadata";
+    default = "${jellyConfig.dataDir}/metadata";
     description = mdDocs ''
       The metadata path.
     '';

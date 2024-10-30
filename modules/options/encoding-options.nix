@@ -24,7 +24,7 @@ in {
 
   transcodingTempPath = mkOption {
     type = types.str;
-    default = "${jellyConfig.WorkingDirectory}/transcodes";
+    default = "${jellyConfig.dataDir}/transcodes";
     description = mdDocs ''
       The temporary transcoding path.
     '';
