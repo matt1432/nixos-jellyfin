@@ -160,8 +160,6 @@ in {
         # Make jellyfin-web read/write
         rm -rf ${cfg.dataDir}/jellyfin-web
         cp -r ${cfg.webPackage}/share/jellyfin-web ${cfg.dataDir}
-        chmod 770 -R ${cfg.dataDir}
-        chown ${cfg.user}:${cfg.group} -R ${cfg.dataDir}
 
         backupFile() {
             if [ -w "$1" ]; then
@@ -186,7 +184,7 @@ in {
         cp ${metadataFile} "${cfg.configDir}/metadata.xml"
         chmod 600 "${cfg.configDir}/metadata.xml"
 
-        chown jellyfin:jellyfin -R "${cfg.configDir}"
+        chmod u+w -R "${cfg.configDir}"
       '';
 
       serviceConfig.ExecStart = mkForce (concatStringsSep " " [
