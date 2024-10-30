@@ -21,7 +21,6 @@ jellyPkgs: {
 
   cfg = config.services.jellyfin;
   jellyConfig = config.systemd.services.jellyfin.serviceConfig;
-  configDir = "${jellyConfig.WorkingDirectory}/config";
 
   mkEmptyDefault = opt: name:
     if isNull opt
@@ -170,23 +169,23 @@ in {
             fi
         }
 
-        backupFile "${configDir}/branding.xml"
-        cp ${brandingFile} "${configDir}/branding.xml"
-        chmod 600 "${configDir}/branding.xml"
+        backupFile "${cfg.configDir}/branding.xml"
+        cp ${brandingFile} "${cfg.configDir}/branding.xml"
+        chmod 600 "${cfg.configDir}/branding.xml"
 
-        backupFile "${configDir}/encoding.xml"
-        cp ${encodingFile} "${configDir}/encoding.xml"
-        chmod 600 "${configDir}/encoding.xml"
+        backupFile "${cfg.configDir}/encoding.xml"
+        cp ${encodingFile} "${cfg.configDir}/encoding.xml"
+        chmod 600 "${cfg.configDir}/encoding.xml"
 
-        backupFile "${configDir}/system.xml"
-        cp ${systemFile} "${configDir}/system.xml"
-        chmod 600 "${configDir}/system.xml"
+        backupFile "${cfg.configDir}/system.xml"
+        cp ${systemFile} "${cfg.configDir}/system.xml"
+        chmod 600 "${cfg.configDir}/system.xml"
 
-        backupFile "${configDir}/metadata.xml"
-        cp ${metadataFile} "${configDir}/metadata.xml"
-        chmod 600 "${configDir}/metadata.xml"
+        backupFile "${cfg.configDir}/metadata.xml"
+        cp ${metadataFile} "${cfg.configDir}/metadata.xml"
+        chmod 600 "${cfg.configDir}/metadata.xml"
 
-        chown jellyfin:jellyfin -R "${configDir}"
+        chown jellyfin:jellyfin -R "${cfg.configDir}"
       '';
 
       serviceConfig.ExecStart = mkForce (concatStringsSep " " [
