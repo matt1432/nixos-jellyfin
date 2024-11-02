@@ -75,6 +75,12 @@ jellyPkgs: {
       };
     };
 
+  mkConfigSetup = file: name: ''
+    backupFile "${cfg.configDir}/${name}.xml"
+    cp ${file} "${cfg.configDir}/${name}.xml"
+    ${optionalString cfg.settings.makeConfigWritable "chmod 600 \"${cfg.configDir}/${name}.xml\""}
+  '';
+
   brandingFile = importXML "branding" cfg.settings.branding;
   encodingFile = importXML "encoding" cfg.settings.encoding;
   metadataFile = importXML "metadata" cfg.settings.metadata;
@@ -121,6 +127,15 @@ in {
       default = null;
       type = types.nullOr (types.submodule {
         options = {
+          makeConfigWritable = mkOption {
+            type = types.bool;
+            default = false;
+            description = ''
+              Changes the permissions of the config files to allow
+              Jellyfin to change settings during execution.
+            '';
+          };
+
           # Organized by config file
           branding = import ./options/branding-options.nix {
             inherit lib;
@@ -169,24 +184,26 @@ in {
             fi
         }
 
-        backupFile "${cfg.configDir}/branding.xml"
-        cp ${brandingFile} "${cfg.configDir}/branding.xml"
-        chmod 600 "${cfg.configDir}/branding.xml"
-
-        backupFile "${cfg.configDir}/encoding.xml"
-        cp ${encodingFile} "${cfg.configDir}/encoding.xml"
-        chmod 600 "${cfg.configDir}/encoding.xml"
-
-        backupFile "${cfg.configDir}/system.xml"
-        cp ${systemFile} "${cfg.configDir}/system.xml"
-        chmod 600 "${cfg.configDir}/system.xml"
-
-        backupFile "${cfg.configDir}/metadata.xml"
-        cp ${metadataFile} "${cfg.configDir}/metadata.xml"
-        chmod 600 "${cfg.configDir}/metadata.xml"
+        ${concatMapStringsSep "\n" (x: mkConfigSetup x.file x.name) [
+          {
+            file = brandingFile;
+            name = "branding";
+          }
+          {
+            file = encodingFile;
+            name = "encoding";
+          }
+          {
+            file = systemFile;
+            name = "system";
+          }
+          {
+            file = metadataFile;
+            name = "metadata";
+          }
+        ]}
 
         chmod u+w -R "${cfg.dataDir}/jellyfin-web"
-        chmod u+w -R "${cfg.configDir}"
       '';
 
       serviceConfig.ExecStart = mkForce (concatStringsSep " " [
