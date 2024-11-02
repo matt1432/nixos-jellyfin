@@ -34,7 +34,7 @@ xml
     <VppTonemappingContrast>${toString cfg.vppTonemappingContrast}</VppTonemappingContrast>
     <H264Crf>${toString cfg.h264Crf}</H264Crf>
     <H265Crf>${toString cfg.h265Crf}</H265Crf>
-    ${mkEmptyDefault cfg.encoderPreset "EncoderPreset"}
+    <EncoderPreset>${cfg.encoderPreset}</EncoderPreset>
     ${mkBool cfg.deinterlaceDoubleRate "DeinterlaceDoubleRate"}
     <DeinterlaceMethod>${cfg.deinterlaceMethod}</DeinterlaceMethod>
     ${mkBool cfg.enableDecodingColorDepth10Hevc "EnableDecodingColorDepth10Hevc"}

@@ -245,8 +245,20 @@ in {
   };
 
   encoderPreset = mkOption {
-    type = with types; nullOr str;
-    default = null;
+    type = types.enum [
+      "auto"
+      "placebo"
+      "veryslow"
+      "slower"
+      "slow"
+      "medium"
+      "fast"
+      "faster"
+      "veryfast"
+      "superfast"
+      "ultrafast"
+    ];
+    default = "auto";
     description = mdDocs ''
       The encoder preset.
     '';
