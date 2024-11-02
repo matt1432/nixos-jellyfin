@@ -158,6 +158,7 @@ in {
 
       preStart = ''
         # Make jellyfin-web read/write
+        chmod u+w -R "${cfg.dataDir}/jellyfin-web"
         rm -rf ${cfg.dataDir}/jellyfin-web
         cp -r ${cfg.webPackage}/share/jellyfin-web ${cfg.dataDir}
 
@@ -184,6 +185,7 @@ in {
         cp ${metadataFile} "${cfg.configDir}/metadata.xml"
         chmod 600 "${cfg.configDir}/metadata.xml"
 
+        chmod u+w -R "${cfg.dataDir}/jellyfin-web"
         chmod u+w -R "${cfg.configDir}"
       '';
 
