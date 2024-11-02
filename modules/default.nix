@@ -78,7 +78,7 @@ jellyPkgs: {
   mkConfigSetup = file: name: ''
     backupFile "${cfg.configDir}/${name}.xml"
     cp -rf ${file} "${cfg.configDir}/${name}.xml"
-    ${optionalString cfg.settings.makeConfigWritable "chmod 600 \"${cfg.configDir}/${name}.xml\""}
+    chmod 600 "${cfg.configDir}/${name}.xml"
   '';
 
   brandingFile = importXML "branding" cfg.settings.branding;
@@ -127,15 +127,6 @@ in {
       default = null;
       type = types.nullOr (types.submodule {
         options = {
-          makeConfigWritable = mkOption {
-            type = types.bool;
-            default = false;
-            description = ''
-              Changes the permissions of the config files to allow
-              Jellyfin to change settings during execution.
-            '';
-          };
-
           # Organized by config file
           branding = import ./options/branding-options.nix {
             inherit lib;
