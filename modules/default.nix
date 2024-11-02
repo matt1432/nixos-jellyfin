@@ -77,7 +77,7 @@ jellyPkgs: {
 
   mkConfigSetup = file: name: ''
     backupFile "${cfg.configDir}/${name}.xml"
-    cp ${file} "${cfg.configDir}/${name}.xml"
+    cp -rf ${file} "${cfg.configDir}/${name}.xml"
     ${optionalString cfg.settings.makeConfigWritable "chmod 600 \"${cfg.configDir}/${name}.xml\""}
   '';
 
