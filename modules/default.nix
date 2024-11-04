@@ -91,6 +91,11 @@ in {
       type = types.package;
       default = jellyPkgs.${pkgs.system}.jellyfin-web;
       defaultText = literalExpression "nixos-jellyfin.packages.x86_64-linux.jellyfin-web";
+      example = literalExpression ''
+        nixos-jellyfin.packages.x86_64-linux.jellyfin-web.override {
+          forceEnableBackdrops = true;
+        }
+      '';
       description = ''
         The jellyfin-web package to use.\
         By default, this option will use the `packages.jellyfin-web` as exposed by this flake.

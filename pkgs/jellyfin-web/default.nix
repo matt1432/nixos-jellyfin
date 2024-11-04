@@ -1,16 +1,17 @@
 {
+  lib,
   buildNpmPackage,
   darwin,
   fetchFromGitHub,
   giflib,
-  lib,
   overrideSDK,
   pango,
   pkg-config,
   stdenv,
   xcbuild,
+  forceEnableBackdrops ? false,
 }: let
-  inherit (lib) optionals removePrefix;
+  inherit (lib) optionals optionalString removePrefix;
 
   jellyfin-web-src = import ./src.nix;
   jellyfin-src = import ../jellyfin/src.nix;
@@ -65,6 +66,13 @@ in
       cp -a dist $out/share/jellyfin-web
 
       runHook postInstall
+    '';
+
+    postInstall = optionalString forceEnableBackdrops ''
+      letter=$(sed -n 's/.*enableBackdrops:function...return.\(.\).*/\1/p' $out/share/jellyfin-web/main.jellyfin.bundle.js)
+
+      substituteInPlace $out/share/jellyfin-web/main.jellyfin.bundle.js --replace-fail \
+          "enableBackdrops:function(){return $letter}" "enableBackdrops:function(){return _}"
     '';
 
     meta = with lib; {
