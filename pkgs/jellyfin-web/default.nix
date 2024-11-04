@@ -1,7 +1,6 @@
 {
   buildNpmPackage,
   darwin,
-  dart-sass,
   fetchFromGitHub,
   giflib,
   lib,
@@ -19,7 +18,7 @@
   # node-canvas builds code that requires aligned_alloc,
   # which on Darwin requires at least the 10.15 SDK
   stdenv' =
-    if stdenv.isDarwin
+    if stdenv.hostPlatform.isDarwin
     then
       overrideSDK stdenv {
         darwinMinVersion = "10.15";
@@ -35,28 +34,29 @@ in
     src = assert jellyfin-web-src.rev == jellyfin-src.rev;
       fetchFromGitHub jellyfin-web-src;
 
+    postPatch = ''
+      substituteInPlace webpack.common.js --replace-fail \
+          "git describe --always --dirty" \
+          "echo ${jellyfin-web-src.rev}"
+    '';
+
     npmDepsHash = import ./npmDepsHash.nix;
+
+    preBuild = ''
+      # using sass-embedded fails at executing node_modules/sass-embedded-linux-x64/dart-sass/src/dart
+      rm -r node_modules/sass-embedded*
+    '';
 
     npmBuildScript = ["build:production"];
 
-    nativeBuildInputs = [pkg-config] ++ optionals stdenv.isDarwin [xcbuild];
+    nativeBuildInputs = [pkg-config] ++ optionals stdenv.hostPlatform.isDarwin [xcbuild];
 
     buildInputs =
       [pango]
-      ++ optionals stdenv.isDarwin [
+      ++ optionals stdenv.hostPlatform.isDarwin [
         giflib
         darwin.apple_sdk.frameworks.CoreText
       ];
-
-    patches = [
-      ./commit.patch
-      ./lock.patch
-    ];
-
-    env = {
-      COMMIT_SHA = jellyfin-web-src.rev;
-      SASS_EMBEDDED_BIN_PATH = "${dart-sass}/bin/sass";
-    };
 
     installPhase = ''
       runHook preInstall
