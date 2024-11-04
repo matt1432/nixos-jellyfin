@@ -10,6 +10,10 @@ in
   (ffmpeg_7-full.override {
     inherit version; # Important! This sets the ABI.
     source = fetchFromGitHub jellyfin-ffmpeg-src;
+
+    # FIXME: https://pr-tracker.nelim.org/?pr=353198
+    withXevd = false;
+    withXeve = false;
   })
   .overrideAttrs (old: {
     pname = "jellyfin-ffmpeg";
