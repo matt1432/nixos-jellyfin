@@ -18,8 +18,12 @@ in
   .overrideAttrs (old: {
     pname = "jellyfin-ffmpeg";
 
-    # Clobber upstream patches as they don't apply to the Jellyfin fork
-    patches = [];
+    configureFlags =
+      old.configureFlags
+      ++ [
+        "--extra-version=Jellyfin"
+        "--disable-ptx-compression" # https://github.com/jellyfin/jellyfin/issues/7944#issuecomment-1156880067
+      ];
 
     postPatch = ''
       for file in $(cat debian/patches/series); do
@@ -30,9 +34,10 @@ in
     '';
 
     meta = {
+      inherit (old.meta) license mainProgram;
+      changelog = "https://github.com/jellyfin/jellyfin-ffmpeg/releases/tag/v${version}";
       description = "${old.meta.description} (Jellyfin fork)";
       homepage = "https://github.com/jellyfin/jellyfin-ffmpeg";
-      license = lib.licenses.gpl3;
       pkgConfigModules = ["libavutil"];
     };
   })
