@@ -159,6 +159,12 @@ in {
   config = mkIf (cfg.enable && cfg.settings != null) {
     services.jellyfin.package = mkDefault jellyPkgs.${pkgs.system}.jellyfin;
 
+    environment.systemPackages = with cfg; [
+      finalPackage
+      webPackage
+      ffmpegPackage
+    ];
+
     systemd.services."jellyfin" = {
       restartTriggers = [(builtins.toJSON cfg.settings)];
 
