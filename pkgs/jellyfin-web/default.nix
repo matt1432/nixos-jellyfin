@@ -35,11 +35,17 @@ in
     src = assert jellyfin-web-src.rev == jellyfin-src.rev;
       fetchFromGitHub jellyfin-web-src;
 
-    postPatch = ''
-      substituteInPlace webpack.common.js --replace-fail \
-          "git describe --always --dirty" \
-          "echo ${jellyfin-web-src.rev}"
-    '';
+    postPatch =
+      ''
+        substituteInPlace webpack.common.js --replace-fail \
+            "git describe --always --dirty" \
+            "echo ${jellyfin-web-src.rev}"
+      ''
+      + optionalString forceEnableBackdrops ''
+        substituteInPlace src/scripts/settings/userSettings.js --replace-fail \
+            "return toBoolean(this.get('enableBackdrops', false), false);" \
+            "return toBoolean(this.get('enableBackdrops', false), true);"
+      '';
 
     npmDepsHash = import ./npmDepsHash.nix;
 
@@ -66,13 +72,6 @@ in
       cp -a dist $out/share/jellyfin-web
 
       runHook postInstall
-    '';
-
-    postInstall = optionalString forceEnableBackdrops ''
-      letter=$(sed -n 's/.*enableBackdrops:function...return.\(.\).*/\1/p' $out/share/jellyfin-web/main.jellyfin.bundle.js)
-
-      substituteInPlace $out/share/jellyfin-web/main.jellyfin.bundle.js --replace-fail \
-          "enableBackdrops:function(){return $letter}" "enableBackdrops:function(){return _}"
     '';
 
     meta = with lib; {
