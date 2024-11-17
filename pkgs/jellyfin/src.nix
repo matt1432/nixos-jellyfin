@@ -2,6 +2,6 @@
 {
   owner = "jellyfin";
   repo = "jellyfin";
-  rev = "v10.10.1";
-  hash = "sha256-jDiJ1tnCR3cZvNmvZ47Vvoqow1sC+xciHsO546yoIKY=";
+  rev = "v10.10.2";
+  hash = "sha256-tA9Jr6X6LzntHTJ+U4ZuA1bs8K6YCMvlbhiWvK8mMn8=";
 }
