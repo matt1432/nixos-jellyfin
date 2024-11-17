@@ -16,6 +16,11 @@ in
 
     src = fetchFromGitHub jellyfin-src;
 
+    postPatch = ''
+      substituteInPlace global.json \
+          --replace-fail "latestMinor" "latestRelease"
+    '';
+
     propagatedBuildInputs = [
       sqlite
     ];
