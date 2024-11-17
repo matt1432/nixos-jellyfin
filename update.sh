@@ -11,7 +11,7 @@ git_push() {
             git config --global user.email 'robot@nowhere.invalid'
             git remote update
 
-            alejandra .
+            alejandra -q .
             git add .
 
             git commit -m "$1"
