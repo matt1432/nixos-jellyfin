@@ -10,7 +10,7 @@ $fetchDeps "$depsFile"
 
 alejandra -q .
 
-git add .
+git add "$depsFile"
 
 git restore ./pkgs/jellyfin/default.nix
 

@@ -1,13 +1,11 @@
 #!/usr/bin/env -S nix develop .#update -c bash
 
-COMMIT="$1"
-
 updatePackage() {
     script="$(nix eval --raw .#"$1".updateScript)"
     $script "${@:2}"
 }
 
-if [[ "$COMMIT" == "--commit" ]]; then
+if [[ "$1" == "--commit" ]]; then
     git config --global user.name 'github-actions[bot]'
     git config --global user.email '41898282+github-actions[bot]@users.noreply.github.com'
 
@@ -17,9 +15,13 @@ if [[ "$COMMIT" == "--commit" ]]; then
     updatePackage "jellyfin-web" --commit
     updatePackage "jellyfin-media-player" --commit
     updatePackage "jellyfin-ffmpeg" --commit
+
+    git restore .
 else
     updatePackage "jellyfin"
     updatePackage "jellyfin-web"
     updatePackage "jellyfin-media-player"
     updatePackage "jellyfin-ffmpeg"
 fi
+
+# TODO: add build CI on PRs to test if they still build
