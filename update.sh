@@ -1,7 +1,6 @@
 #!/usr/bin/env -S nix develop .#update -c bash
 
 COMMIT="$1"
-ROOT_DIR="$(pwd)"
 
 updatePackage() {
     script="$(nix eval --raw .#"$1".updateScript)"
@@ -9,11 +8,10 @@ updatePackage() {
 }
 
 if [[ "$COMMIT" == "--commit" ]]; then
-    cd "$ROOT_DIR" || return
-
     git config --global user.name 'github-actions[bot]'
     git config --global user.email '41898282+github-actions[bot]@users.noreply.github.com'
-    git remote update
+
+    nix flake update
 
     updatePackage "jellyfin" --commit
     updatePackage "jellyfin-web" --commit

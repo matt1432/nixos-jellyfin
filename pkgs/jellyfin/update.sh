@@ -10,6 +10,8 @@ $fetchDeps "$depsFile"
 
 alejandra -q .
 
+git add .
+
 git restore ./pkgs/jellyfin/default.nix
 
 nix-update --flake jellyfin "$@"
