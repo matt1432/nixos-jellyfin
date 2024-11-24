@@ -43,7 +43,12 @@ in
     '';
 
     passthru.updateScript = concatStringsSep " " (nix-update-script {
-      extraArgs = ["--flake" pname];
+      extraArgs = [
+        "--flake"
+        pname
+        "--override-filename"
+        "./pkgs/jellyfin-ffmpeg/default.nix"
+      ];
     });
 
     meta = {

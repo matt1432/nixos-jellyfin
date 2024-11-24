@@ -1,6 +1,6 @@
 #!/usr/bin/env -S nix develop .#update -c bash
 
-nix-update -F jellyfin "$@"
+nix-update --flake jellyfin
 
 depsFile="./pkgs/jellyfin/nuget-deps.nix"
 
@@ -9,3 +9,7 @@ rm -rf "$depsFile"
 $fetchDeps "$depsFile"
 
 alejandra -q .
+
+git restore ./pkgs/jellyfin/default.nix
+
+nix-update --flake jellyfin "$@"
