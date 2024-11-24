@@ -2,21 +2,30 @@
   fetchFromGitHub,
   ffmpeg_7-full,
   lib,
+  nix-update-script,
+  ...
 }: let
-  jellyfin-ffmpeg-src = import ./src.nix;
+  inherit (lib) concatStringsSep;
 
-  version = lib.removePrefix "v" jellyfin-ffmpeg-src.rev;
+  pname = "jellyfin-ffmpeg";
+  version = "7.0.2-7";
 in
   (ffmpeg_7-full.override {
     inherit version; # Important! This sets the ABI.
-    source = fetchFromGitHub jellyfin-ffmpeg-src;
+
+    source = fetchFromGitHub {
+      owner = "jellyfin";
+      repo = pname;
+      rev = "v${version}";
+      hash = "sha256-l1oCilqWE3NpSzrNHAepglL3BHXZ2yxcQfupFJ3zwvg=";
+    };
 
     # FIXME: https://pr-tracker.nelim.org/?pr=353198
     withXevd = false;
     withXeve = false;
   })
   .overrideAttrs (old: {
-    pname = "jellyfin-ffmpeg";
+    inherit pname;
 
     configureFlags =
       old.configureFlags
@@ -32,6 +41,10 @@ in
 
       ${old.postPatch or ""}
     '';
+
+    passthru.updateScript = concatStringsSep " " (nix-update-script {
+      extraArgs = ["--flake" pname];
+    });
 
     meta = {
       inherit (old.meta) license mainProgram;

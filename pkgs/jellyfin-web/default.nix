@@ -80,10 +80,7 @@ in
     '';
 
     passthru.updateScript = concatStringsSep " " (nix-update-script {
-      extraArgs = [
-        "--flake"
-        "jellyfin-web"
-      ];
+      extraArgs = ["--flake" pname];
     });
 
     meta = with lib; {

@@ -5,6 +5,7 @@
   Cocoa ? null,
   CoreAudio ? null,
   CoreFoundation ? null,
+  makeWrapper,
   MediaPlayer ? null,
   SDL2,
   cmake,
@@ -13,24 +14,30 @@
   libXrandr,
   libvdpau,
   mpv,
+  nix-update-script,
   ninja,
   pkg-config,
   python3,
   qt5,
   jellyfin-web,
-  withDbus ? stdenv.isLinux,
+  # Options as overrides
+  withDbus ? stdenv.hostPlatform.isLinux,
   isNvidiaWayland ? false,
-  makeWrapper,
 }: let
-  inherit (lib) optionals optionalString removePrefix;
+  inherit (lib) concatStringsSep optionals optionalString;
 
-  jellyfin-media-player-src = import ./src.nix;
+  pname = "jellyfin-media-player";
+  version = "1.11.1";
 in
   stdenv.mkDerivation {
-    pname = "jellyfin-media-player";
-    version = removePrefix "v" jellyfin-media-player-src.rev;
+    inherit pname version;
 
-    src = fetchFromGitHub jellyfin-media-player-src;
+    src = fetchFromGitHub {
+      owner = "jellyfin";
+      repo = "jellyfin-media-player";
+      rev = "v${version}";
+      hash = "sha256-Jsn4kWQzUaQI9MpbsLJr6JSJk9ZSnMEcrebQ2DYegSU=";
+    };
 
     patches = [
       # fix the location of the jellyfin-web path
@@ -55,10 +62,10 @@ in
       ++ optionals isNvidiaWayland [
         makeWrapper
       ]
-      ++ optionals stdenv.isLinux [
+      ++ optionals stdenv.hostPlatform.isLinux [
         qt5.qtwayland
       ]
-      ++ optionals stdenv.isDarwin [
+      ++ optionals stdenv.hostPlatform.isDarwin [
         Cocoa
         CoreAudio
         CoreFoundation
@@ -88,7 +95,7 @@ in
     '';
 
     postInstall =
-      (optionalString stdenv.isDarwin ''
+      (optionalString stdenv.hostPlatform.isDarwin ''
         mkdir -p $out/bin $out/Applications
         mv "$out/Jellyfin Media Player.app" $out/Applications
 
@@ -102,6 +109,10 @@ in
         wrapProgram $out/bin/jellyfinmediaplayer \
             --add-flags "--platform xcb"
       '');
+
+    passthru.updateScript = concatStringsSep " " (nix-update-script {
+      extraArgs = ["--flake" pname];
+    });
 
     meta = with lib; {
       homepage = "https://github.com/jellyfin/jellyfin-media-player";
