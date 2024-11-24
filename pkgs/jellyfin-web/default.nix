@@ -16,7 +16,7 @@
   inherit (lib) concatStringsSep optionals optionalString;
 
   pname = "jellyfin-web";
-  version = "10.10.3";
+  version = "10.10.2";
 
   # node-canvas builds code that requires aligned_alloc,
   # which on Darwin requires at least the 10.15 SDK
@@ -37,10 +37,10 @@ in
       owner = "jellyfin";
       repo = pname;
       rev = "v${version}";
-      hash = "sha256-xmy2cr6MJSen6Pok3Wde4mBcu5pM4qtGEBfqMpGdAxY=";
+      hash = "sha256-IAe5VlrJkwsa3fs3RB+gnYnZFM/nRjERIXEjwyKEYLI=";
     };
 
-    npmDepsHash = "sha256-qzjniTbJRNeZ2WFu8RBjcdZR96nvGRHMERdEiELLufg=";
+    npmDepsHash = "sha256-TTNS/KxRJUqqwdF8tZwhNokBAJXPQ+J45tmUJlgcJIY=";
 
     postPatch =
       ''
