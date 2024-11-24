@@ -4,6 +4,7 @@
   darwin,
   fetchFromGitHub,
   giflib,
+  nix-update-script,
   overrideSDK,
   pango,
   pkg-config,
@@ -12,7 +13,7 @@
   # Options as overrides
   forceEnableBackdrops ? false,
 }: let
-  inherit (lib) optionals optionalString;
+  inherit (lib) concatStringsSep optionals optionalString;
 
   pname = "jellyfin-web";
   version = "10.10.2";
@@ -77,6 +78,13 @@ in
 
       runHook postInstall
     '';
+
+    passthru.updateScript = concatStringsSep " " (nix-update-script {
+      extraArgs = [
+        "--flake"
+        "jellyfin-web"
+      ];
+    });
 
     meta = with lib; {
       description = "Web Client for Jellyfin";

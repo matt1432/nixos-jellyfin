@@ -8,13 +8,18 @@
   freetype,
   sqlite,
 }: let
-  jellyfin-src = import ./src.nix;
+  pname = "jellyfin";
+  version = "10.10.2";
 in
   buildDotnetModule rec {
-    pname = "jellyfin";
-    version = lib.removePrefix "v" jellyfin-src.rev;
+    inherit pname version;
 
-    src = fetchFromGitHub jellyfin-src;
+    src = fetchFromGitHub {
+      owner = "jellyfin";
+      repo = pname;
+      rev = "v${version}";
+      hash = "sha256-tA9Jr6X6LzntHTJ+U4ZuA1bs8K6YCMvlbhiWvK8mMn8=";
+    };
 
     postPatch = ''
       substituteInPlace global.json \
@@ -36,6 +41,8 @@ in
     dotnet-sdk = dotnetCorePackages.sdk_8_0;
     dotnet-runtime = dotnetCorePackages.aspnetcore_8_0;
     dotnetBuildFlags = ["--no-self-contained"];
+
+    passthru.updateScript = ./update.sh;
 
     meta = {
       description = "The Free Software Media System";
