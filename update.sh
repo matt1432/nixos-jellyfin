@@ -23,5 +23,3 @@ else
     updatePackage "jellyfin-media-player"
     updatePackage "jellyfin-ffmpeg"
 fi
-
-# TODO: add build CI on PRs to test if they still build

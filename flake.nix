@@ -45,6 +45,24 @@
           nix-update
         ];
       };
+
+      build = pkgs.mkShell {
+        packages = with pkgs; [
+          bash
+          git
+
+          (writeShellApplication {
+            name = "buildAll";
+
+            text = ''
+              nix build .#jellyfin
+              nix build .#jellyfin-web
+              nix build .#jellyfin-media-player
+              nix build .#jellyfin-ffmpeg
+            '';
+          })
+        ];
+      };
     });
   };
 }
