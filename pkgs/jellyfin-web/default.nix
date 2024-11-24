@@ -9,12 +9,13 @@
   pkg-config,
   stdenv,
   xcbuild,
+  # Options as overrides
   forceEnableBackdrops ? false,
 }: let
-  inherit (lib) optionals optionalString removePrefix;
+  inherit (lib) optionals optionalString;
 
-  jellyfin-web-src = import ./src.nix;
-  jellyfin-src = import ../jellyfin/src.nix;
+  pname = "jellyfin-web";
+  version = "10.10.2";
 
   # node-canvas builds code that requires aligned_alloc,
   # which on Darwin requires at least the 10.15 SDK
@@ -29,25 +30,28 @@
   buildNpmPackage' = buildNpmPackage.override {stdenv = stdenv';};
 in
   buildNpmPackage' {
-    pname = "jellyfin-web";
-    version = removePrefix "v" jellyfin-web-src.rev;
+    inherit pname version;
 
-    src = assert jellyfin-web-src.rev == jellyfin-src.rev;
-      fetchFromGitHub jellyfin-web-src;
+    src = fetchFromGitHub {
+      owner = "jellyfin";
+      repo = pname;
+      rev = "v${version}";
+      hash = "sha256-IAe5VlrJkwsa3fs3RB+gnYnZFM/nRjERIXEjwyKEYLI=";
+    };
+
+    npmDepsHash = "sha256-TTNS/KxRJUqqwdF8tZwhNokBAJXPQ+J45tmUJlgcJIY=";
 
     postPatch =
       ''
         substituteInPlace webpack.common.js --replace-fail \
             "git describe --always --dirty" \
-            "echo ${jellyfin-web-src.rev}"
+            "echo v${version}"
       ''
       + optionalString forceEnableBackdrops ''
         substituteInPlace src/scripts/settings/userSettings.js --replace-fail \
             "return toBoolean(this.get('enableBackdrops', false), false);" \
             "return toBoolean(this.get('enableBackdrops', false), true);"
       '';
-
-    npmDepsHash = import ./npmDepsHash.nix;
 
     preBuild = ''
       # using sass-embedded fails at executing node_modules/sass-embedded-linux-x64/dart-sass/src/dart
