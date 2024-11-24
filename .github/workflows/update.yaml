@@ -8,9 +8,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
-    - name: setup-nix
-      uses: cachix/install-nix-action@v25
-      with:
-        github_access_token: ${{ secrets.GITHUB_TOKEN }}
+    - uses: cachix/install-nix-action@v30
+
     - name: update
       run: ./update.sh --commit
+
+    - name: Create Pull Request
+      id: cpr
+      uses: peter-evans/create-pull-request@v7
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        committer: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
+        author: ${{ github.actor }} <${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com>
+        signoff: false
+        branch: updates
+        delete-branch: true
+        title: '[CI] Package updates'
+        draft: false
