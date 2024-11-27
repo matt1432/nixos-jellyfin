@@ -19,10 +19,6 @@ in
       rev = "v${version}";
       hash = "sha256-l1oCilqWE3NpSzrNHAepglL3BHXZ2yxcQfupFJ3zwvg=";
     };
-
-    # FIXME: https://pr-tracker.nelim.org/?pr=353198
-    withXevd = false;
-    withXeve = false;
   })
   .overrideAttrs (old: {
     inherit pname;
