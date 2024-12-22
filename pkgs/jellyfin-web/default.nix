@@ -12,6 +12,7 @@
   xcbuild,
   # Options as overrides
   forceEnableBackdrops ? false,
+  forceDisablePreferFmp4 ? false,
 }: let
   inherit (lib) concatStringsSep optionals optionalString;
 
@@ -52,6 +53,11 @@ in
         substituteInPlace src/scripts/settings/userSettings.js --replace-fail \
             "return toBoolean(this.get('enableBackdrops', false), false);" \
             "return toBoolean(this.get('enableBackdrops', false), true);"
+      ''
+      + optionalString forceDisablePreferFmp4 ''
+        substituteInPlace src/scripts/settings/userSettings.js --replace-fail \
+            "return toBoolean(this.get('preferFmp4HlsContainer', false), browser.safari || browser.firefox || browser.chrome || browser.edgeChromium);" \
+            "return toBoolean(this.get('preferFmp4HlsContainer', false), false);"
       '';
 
     preBuild = ''
