@@ -32,7 +32,7 @@ in
 
     projectFile = "Jellyfin.Server/Jellyfin.Server.csproj";
     executables = ["jellyfin"];
-    nugetDeps = ./nuget-deps.nix;
+    nugetDeps = ./nuget-deps.json;
     runtimeDeps = [
       ffmpeg
       fontconfig

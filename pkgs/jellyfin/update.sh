@@ -2,7 +2,7 @@
 
 nix-update --flake jellyfin
 
-depsFile="./pkgs/jellyfin/nuget-deps.nix"
+depsFile="./pkgs/jellyfin/nuget-deps.json"
 
 fetchDeps=$(nix build .#jellyfin.fetch-deps --print-out-paths --no-link)
 rm -rf "$depsFile"
