@@ -1,15 +1,16 @@
 {
   lib,
-  buildNpmPackage,
-  darwin,
-  fetchFromGitHub,
-  giflib,
-  nix-update-script,
-  overrideSDK,
-  pango,
-  pkg-config,
   stdenv,
+  fetchFromGitHub,
+  buildNpmPackage,
+  nodejs_20,
+  nix-update-script,
+  pkg-config,
   xcbuild,
+  pango,
+  giflib,
+  apple-sdk_11,
+  darwinMinVersionHook,
   # Options as overrides
   forceEnableBackdrops ? false,
   forceDisablePreferFmp4 ? false,
@@ -18,21 +19,11 @@
 
   pname = "jellyfin-web";
   version = "10.10.3";
-
-  # node-canvas builds code that requires aligned_alloc,
-  # which on Darwin requires at least the 10.15 SDK
-  stdenv' =
-    if stdenv.hostPlatform.isDarwin
-    then
-      overrideSDK stdenv {
-        darwinMinVersion = "10.15";
-        darwinSdkVersion = "11.0";
-      }
-    else stdenv;
-  buildNpmPackage' = buildNpmPackage.override {stdenv = stdenv';};
 in
-  buildNpmPackage' {
+  buildNpmPackage {
     inherit pname version;
+
+    nodejs = nodejs_20; # https://github.com/NixOS/nixpkgs/blob/95879b2866c0517cea97ed12ef5d812d5485995e/pkgs/by-name/je/jellyfin-web/package.nix#L29
 
     src = fetchFromGitHub {
       owner = "jellyfin";
@@ -73,7 +64,10 @@ in
       [pango]
       ++ optionals stdenv.hostPlatform.isDarwin [
         giflib
-        darwin.apple_sdk.frameworks.CoreText
+        apple-sdk_11
+        # node-canvas builds code that requires aligned_alloc,
+        # which on Darwin requires at least the 10.15 SDK
+        (darwinMinVersionHook "10.15")
       ];
 
     installPhase = ''
