@@ -9,7 +9,7 @@
   sqlite,
 }: let
   pname = "jellyfin";
-  version = "10.10.4";
+  version = "10.10.5";
 in
   buildDotnetModule rec {
     inherit pname version;
@@ -18,7 +18,7 @@ in
       owner = "jellyfin";
       repo = pname;
       rev = "v${version}";
-      hash = "sha256-L/h2TfRsOxWFK6O3lh5BusWOyxuKpvhimH/wANIT0vA=";
+      hash = "sha256-fXjQ8h//C0Ox5pyyFazpcuVLZibKAbnXcY6OHLI2bDQ=";
     };
 
     postPatch = ''
