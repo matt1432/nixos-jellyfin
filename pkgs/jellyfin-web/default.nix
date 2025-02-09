@@ -9,8 +9,6 @@
   xcbuild,
   pango,
   giflib,
-  apple-sdk_11,
-  darwinMinVersionHook,
   # Options as overrides
   forceEnableBackdrops ? false,
   forceDisablePreferFmp4 ? false,
@@ -64,10 +62,6 @@ in
       [pango]
       ++ optionals stdenv.hostPlatform.isDarwin [
         giflib
-        apple-sdk_11
-        # node-canvas builds code that requires aligned_alloc,
-        # which on Darwin requires at least the 10.15 SDK
-        (darwinMinVersionHook "10.15")
       ];
 
     installPhase = ''

@@ -3,9 +3,9 @@
   buildDotnetModule,
   dotnetCorePackages,
   fetchFromGitHub,
-  ffmpeg,
   fontconfig,
   freetype,
+  jellyfin-ffmpeg,
   sqlite,
 }: let
   pname = "jellyfin";
@@ -21,11 +21,6 @@ in
       hash = "sha256-fXjQ8h//C0Ox5pyyFazpcuVLZibKAbnXcY6OHLI2bDQ=";
     };
 
-    postPatch = ''
-      substituteInPlace global.json \
-          --replace-fail "latestMinor" "latestRelease"
-    '';
-
     propagatedBuildInputs = [
       sqlite
     ];
@@ -34,9 +29,9 @@ in
     executables = ["jellyfin"];
     nugetDeps = ./nuget-deps.json;
     runtimeDeps = [
-      ffmpeg
       fontconfig
       freetype
+      jellyfin-ffmpeg
     ];
     dotnet-sdk = dotnetCorePackages.sdk_8_0;
     dotnet-runtime = dotnetCorePackages.aspnetcore_8_0;

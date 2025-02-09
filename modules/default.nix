@@ -116,7 +116,7 @@ in {
       type = types.package;
       readOnly = true;
       default = cfg.package.override {
-        ffmpeg = cfg.ffmpegPackage;
+        jellyfin-ffmpeg = cfg.ffmpegPackage;
       };
       defaultText = literalExpression ''
         nixos-jellyfin.packages.x86_64-linux.jellyfin.override {
