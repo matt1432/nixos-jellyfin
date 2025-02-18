@@ -1,6 +1,6 @@
 #!/usr/bin/env -S nix develop .#update -c bash
 
-nix-update --flake jellyfin
+commit_msg="$(nix-update --flake jellyfin --write-commit-message >(tail -f -) > /dev/null)"
 
 depsFile="./pkgs/jellyfin/nuget-deps.json"
 
@@ -8,10 +8,12 @@ fetchDeps=$(nix build .#jellyfin.fetch-deps --print-out-paths --no-link)
 rm -rf "$depsFile"
 $fetchDeps "$depsFile"
 
-alejandra -q .
+echo "$commit_msg"
 
-git add "$depsFile"
+if [[ "$1" == "--commit" ]] && [[ "$commit_msg" != "" ]]; then
+    git add ./flake.lock
+    git commit -m "chore: update flake.lock"
 
-git restore ./pkgs/jellyfin/default.nix
-
-nix-update --flake jellyfin "$@"
+    git add "$depsFile" ./pkgs/jellyfin/default.nix
+    git commit -m "$commit_msg"
+fi
