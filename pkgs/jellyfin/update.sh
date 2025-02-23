@@ -1,6 +1,6 @@
 #!/usr/bin/env -S nix develop .#update -c bash
 
-commit_msg="$(nix-update --flake jellyfin --write-commit-message >(tail -f -) > /dev/null)"
+commit_msg="$(nix-update --flake jellyfin "${@:2}" --write-commit-message >(tail -f -) > /dev/null)"
 
 depsFile="./pkgs/jellyfin/nuget-deps.json"
 
