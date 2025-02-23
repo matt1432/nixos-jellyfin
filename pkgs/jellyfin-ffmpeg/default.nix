@@ -3,6 +3,7 @@
   ffmpeg_7-full,
   lib,
   nix-update-script,
+  fromCUDA ? false,
   ...
 }: let
   inherit (lib) concatStringsSep;
@@ -19,6 +20,8 @@ in
       rev = "v${version}";
       hash = "sha256-zaBu/hhFIMjneb7yUzToaJJAaSptxLld8zOvfGckHLY=";
     };
+
+    withUnfree = fromCUDA;
   })
   .overrideAttrs (old: {
     inherit pname;

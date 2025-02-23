@@ -22,11 +22,17 @@
 
     perSystem = attrs:
       nixpkgs.lib.genAttrs supportedSystems (system:
-        attrs (import nixpkgs {inherit system;}));
+        attrs (import nixpkgs {inherit system;}) (import nixpkgs {
+          inherit system;
+          config = {
+            allowUnfree = true;
+            cudaSupport = true;
+          };
+        }));
   in {
     packages =
-      perSystem (pkgs:
-        import ./pkgs {inherit self pkgs;});
+      perSystem (pkgs: cudaPkgs:
+        import ./pkgs {inherit self pkgs cudaPkgs;});
 
     nixosModules = {
       jellyfin = import ./modules self.packages;
@@ -34,9 +40,9 @@
       default = self.nixosModules.jellyfin;
     };
 
-    formatter = perSystem (pkgs: pkgs.alejandra);
+    formatter = perSystem (pkgs: cudaPkgs: pkgs.alejandra);
 
-    devShells = perSystem (pkgs: {
+    devShells = perSystem (pkgs: cudaPkgs: {
       update = pkgs.mkShell {
         packages = with pkgs; [
           alejandra
