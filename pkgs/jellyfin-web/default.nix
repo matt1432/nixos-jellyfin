@@ -16,7 +16,7 @@
   inherit (lib) concatStringsSep optionals optionalString;
 
   pname = "jellyfin-web";
-  version = "10.10.3";
+  version = "10.10.4";
 in
   buildNpmPackage {
     inherit pname version;
@@ -27,10 +27,10 @@ in
       owner = "jellyfin";
       repo = pname;
       rev = "v${version}";
-      hash = "sha256-xmy2cr6MJSen6Pok3Wde4mBcu5pM4qtGEBfqMpGdAxY=";
+      hash = "sha256-j5Tl0ORefRPemFO78EvCPmXMKWTsneUsRODQBIA7AdE=";
     };
 
-    npmDepsHash = "sha256-qzjniTbJRNeZ2WFu8RBjcdZR96nvGRHMERdEiELLufg=";
+    npmDepsHash = "sha256-psF/ixahZSgjCeRJHVA+4Xf9UuHY/a2dyhwUQDZois4=";
 
     postPatch =
       ''
