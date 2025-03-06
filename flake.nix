@@ -27,22 +27,31 @@
     perSystemWithCUDA = attrs:
       nixpkgs.lib.genAttrs (import systems) (system:
         attrs
-        (import nixpkgs {inherit system;})
         (import nixpkgs {
           inherit system;
+          overlays = [self.overlays.default];
+        })
+        (import nixpkgs {
+          inherit system;
+          overlays = [self.overlays.default];
           config = {
             allowUnfree = true;
             cudaSupport = true;
           };
         }));
   in {
-    packages =
-      perSystemWithCUDA (pkgs: cudaPkgs:
-        import ./pkgs {inherit self pkgs cudaPkgs;});
+    overlays = {
+      jellyfin = import ./pkgs self;
+      default = self.overlays.jellyfin;
+    };
+
+    packages = perSystemWithCUDA (pkgs: cudaPkgs: {
+      inherit (pkgs) jellyfin jellyfin-web jellyfin-ffmpeg jellyfin-media-player;
+      inherit (cudaPkgs) jellyfin-ffmpeg-cuda;
+    });
 
     nixosModules = {
-      jellyfin = import ./modules self.packages;
-
+      jellyfin = import ./modules self;
       default = self.nixosModules.jellyfin;
     };
 

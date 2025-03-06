@@ -1,23 +1,10 @@
-{
-  pkgs,
-  self,
-  cudaPkgs,
-  ...
-}: {
-  jellyfin-web = pkgs.callPackage ./jellyfin-web {};
+self: (final: prev: {
+  jellyfin-web = final.callPackage ./jellyfin-web {};
 
-  jellyfin = pkgs.callPackage ./jellyfin {};
+  jellyfin = final.callPackage ./jellyfin {};
 
-  jellyfin-ffmpeg = pkgs.callPackage ./jellyfin-ffmpeg {};
+  jellyfin-ffmpeg = final.callPackage ./jellyfin-ffmpeg {};
+  jellyfin-ffmpeg-cuda = final.cudaPackages.callPackage ./jellyfin-ffmpeg {fromCUDA = true;};
 
-  jellyfin-media-player = pkgs.callPackage ./jellyfin-media-player {
-    inherit (self.packages.${pkgs.system}) jellyfin-web;
-  };
-
-  cudaPackages = let
-    cudaCallPackage = file: attrs: cudaPkgs.cudaPackages.callPackage file ({} // attrs // {fromCUDA = true;});
-  in {
-    # FIXME: https://github.com/NixOS/nixpkgs/issues/383720
-    jellyfin-ffmpeg = cudaCallPackage ./jellyfin-ffmpeg {};
-  };
-}
+  jellyfin-media-player = final.callPackage ./jellyfin-media-player {};
+})

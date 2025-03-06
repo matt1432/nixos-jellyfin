@@ -1,4 +1,4 @@
-jellyPkgs: {
+self: {
   config,
   lib,
   pkgs,
@@ -10,7 +10,6 @@ jellyPkgs: {
     concatStringsSep
     concatMapStringsSep
     literalExpression
-    mkDefault
     mkForce
     mkIf
     mkOption
@@ -89,10 +88,10 @@ in {
   options.services.jellyfin = {
     webPackage = mkOption {
       type = types.package;
-      default = jellyPkgs.${pkgs.system}.jellyfin-web;
-      defaultText = literalExpression "nixos-jellyfin.packages.x86_64-linux.jellyfin-web";
+      default = pkgs.jellyfin-web;
+      defaultText = literalExpression "pkgs.jellyfin-web";
       example = literalExpression ''
-        nixos-jellyfin.packages.x86_64-linux.jellyfin-web.override {
+        pkgs.jellyfin-web.override {
           forceEnableBackdrops = true;
         }
       '';
@@ -104,7 +103,7 @@ in {
 
     ffmpegPackage = mkOption {
       type = types.package;
-      default = jellyPkgs.${pkgs.system}.jellyfin-ffmpeg;
+      default = pkgs.jellyfin-ffmpeg;
       defaultText = literalExpression "nixos-jellyfin.packages.x86_64-linux.jellyfin-ffmpeg";
       description = ''
         The jellyfin-ffmpeg package to use.\
@@ -119,8 +118,8 @@ in {
         jellyfin-ffmpeg = cfg.ffmpegPackage;
       };
       defaultText = literalExpression ''
-        nixos-jellyfin.packages.x86_64-linux.jellyfin.override {
-          ffmpeg = nixos-jellyfin.packages.x86_64-linux.jellyfin-ffmpeg;
+        pkgs.jellyfin.override {
+          jellyfin-ffmpeg = pkgs.jellyfin-ffmpeg;
         }
       '';
       description = ''
@@ -162,7 +161,7 @@ in {
   };
 
   config = mkIf (cfg.enable && cfg.settings != null) {
-    services.jellyfin.package = mkDefault jellyPkgs.${pkgs.system}.jellyfin;
+    nixpkgs.overlays = [self.overlays.default];
 
     environment.systemPackages = with cfg; [
       finalPackage
@@ -219,4 +218,7 @@ in {
       ]);
     };
   };
+
+  # For accurate stack trace
+  _file = ./default.nix;
 }
