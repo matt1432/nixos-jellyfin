@@ -23,10 +23,22 @@
     perSystem = attrs:
       nixpkgs.lib.genAttrs supportedSystems (system:
         attrs (import nixpkgs {inherit system;}));
+
+    perSystemWithCUDA = attrs:
+      nixpkgs.lib.genAttrs supportedSystems (system:
+        attrs
+        (import nixpkgs {inherit system;})
+        (import nixpkgs {
+          inherit system;
+          config = {
+            allowUnfree = true;
+            cudaSupport = true;
+          };
+        }));
   in {
     packages =
-      perSystem (pkgs:
-        import ./pkgs {inherit self pkgs;});
+      perSystemWithCUDA (pkgs: cudaPkgs:
+        import ./pkgs {inherit self pkgs cudaPkgs;});
 
     nixosModules = {
       jellyfin = import ./modules self.packages;

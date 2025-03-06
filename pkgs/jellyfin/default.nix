@@ -7,6 +7,7 @@
   freetype,
   jellyfin-ffmpeg,
   sqlite,
+  ...
 }: let
   pname = "jellyfin";
   version = "10.10.6";

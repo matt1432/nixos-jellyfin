@@ -1,6 +1,7 @@
 {
   pkgs,
   self,
+  cudaPkgs,
   ...
 }: {
   jellyfin-web = pkgs.callPackage ./jellyfin-web {};
@@ -13,12 +14,10 @@
     inherit (self.packages.${pkgs.system}) jellyfin-web;
   };
 
-  # Not sure if this actually does anything
-  cudaPackages = {
-    jellyfin-web = pkgs.cudaPackages.callPackage ./jellyfin-web {};
-
-    jellyfin = pkgs.cudaPackages.callPackage ./jellyfin {};
-
-    jellyfin-ffmpeg = pkgs.cudaPackages.callPackage ./jellyfin-ffmpeg {};
+  cudaPackages = let
+    cudaCallPackage = file: attrs: cudaPkgs.cudaPackages.callPackage file ({} // attrs // {fromCUDA = true;});
+  in {
+    # FIXME: https://github.com/NixOS/nixpkgs/issues/383720
+    jellyfin-ffmpeg = cudaCallPackage ./jellyfin-ffmpeg {};
   };
 }
