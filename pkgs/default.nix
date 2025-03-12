@@ -1,4 +1,4 @@
-self: (final: prev: {
+final: prev: {
   jellyfin-web = final.callPackage ./jellyfin-web {};
 
   jellyfin = final.callPackage ./jellyfin {};
@@ -7,4 +7,4 @@ self: (final: prev: {
   jellyfin-ffmpeg-cuda = final.cudaPackages.callPackage ./jellyfin-ffmpeg {fromCUDA = true;};
 
   jellyfin-media-player = final.callPackage ./jellyfin-media-player {};
-})
+}

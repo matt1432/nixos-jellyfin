@@ -41,7 +41,7 @@
         }));
   in {
     overlays = {
-      jellyfin = import ./pkgs self;
+      jellyfin = import ./pkgs;
       default = self.overlays.jellyfin;
     };
 
