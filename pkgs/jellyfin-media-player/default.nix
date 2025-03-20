@@ -27,7 +27,7 @@
   inherit (lib) concatStringsSep optionals optionalString;
 
   pname = "jellyfin-media-player";
-  version = "1.11.1";
+  version = "1.12.0";
 in
   stdenv.mkDerivation {
     inherit pname version;
@@ -36,7 +36,7 @@ in
       owner = "jellyfin";
       repo = "jellyfin-media-player";
       rev = "v${version}";
-      hash = "sha256-Jsn4kWQzUaQI9MpbsLJr6JSJk9ZSnMEcrebQ2DYegSU=";
+      hash = "sha256-IXinyenadnW+a+anQ9e61h+N8vG2r77JPboHm5dN4Iw=";
     };
 
     patches = [
