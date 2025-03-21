@@ -5,7 +5,6 @@
   Cocoa ? null,
   CoreAudio ? null,
   CoreFoundation ? null,
-  makeWrapper,
   MediaPlayer ? null,
   SDL2,
   cmake,
@@ -22,7 +21,7 @@
   jellyfin-web,
   # Options as overrides
   withDbus ? stdenv.hostPlatform.isLinux,
-  isNvidiaWayland ? false,
+  ...
 }: let
   inherit (lib) concatStringsSep optionals optionalString;
 
@@ -58,9 +57,6 @@ in
         qt5.qtwebchannel
         qt5.qtwebengine
         qt5.qtx11extras
-      ]
-      ++ optionals isNvidiaWayland [
-        makeWrapper
       ]
       ++ optionals stdenv.hostPlatform.isLinux [
         qt5.qtwayland
@@ -104,10 +100,6 @@ in
         rmdir $out/Resources
 
         ln -s "$out/Applications/Jellyfin Media Player.app/Contents/MacOS/Jellyfin Media Player" $out/bin/jellyfinmediaplayer
-      '')
-      + (optionalString isNvidiaWayland ''
-        wrapProgram $out/bin/jellyfinmediaplayer \
-            --add-flags "--platform xcb"
       '');
 
     passthru.updateScript = concatStringsSep " " (nix-update-script {
