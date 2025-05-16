@@ -9,7 +9,7 @@
   inherit (lib) concatStringsSep;
 
   pname = "jellyfin-ffmpeg";
-  version = "7.1.1-2";
+  version = "7.1.1-3";
 in
   (ffmpeg_7-full.override {
     inherit version; # Important! This sets the ABI.
@@ -18,7 +18,7 @@ in
       owner = "jellyfin";
       repo = pname;
       rev = "v${version}";
-      hash = "sha256-fiW8L0FjJHhVI5Rc/OVFTJfvBOlqN6c52Fre185HHkU=";
+      hash = "sha256-pJLIhXDPDRhEqzmc1bXViSTSnRifFhMlixkEbGA0GRE=";
     };
 
     withUnfree = fromCUDA;
