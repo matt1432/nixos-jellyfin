@@ -6,7 +6,7 @@
   fromCUDA ? false,
   ...
 }: let
-  inherit (lib) concatStringsSep;
+  inherit (lib) concatStringsSep optionals;
 
   pname = "jellyfin-ffmpeg";
   version = "7.1.1-6";
@@ -34,7 +34,7 @@ in
       ];
 
     # Clobber upstream patches as they don't apply to the Jellyfin fork
-    patches = [ ];
+    patches = [] ++ optionals fromCUDA [./nvccflags-cpp14.patch];
 
     postPatch = ''
       for file in $(cat debian/patches/series); do

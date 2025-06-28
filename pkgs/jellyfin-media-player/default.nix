@@ -90,17 +90,16 @@ in
       ln -s ${jellyfin-web}/share/jellyfin-web .
     '';
 
-    postInstall =
-      (optionalString stdenv.hostPlatform.isDarwin ''
-        mkdir -p $out/bin $out/Applications
-        mv "$out/Jellyfin Media Player.app" $out/Applications
+    postInstall = optionalString stdenv.hostPlatform.isDarwin ''
+      mkdir -p $out/bin $out/Applications
+      mv "$out/Jellyfin Media Player.app" $out/Applications
 
-        # move web-client resources
-        mv $out/Resources/* "$out/Applications/Jellyfin Media Player.app/Contents/Resources/"
-        rmdir $out/Resources
+      # move web-client resources
+      mv $out/Resources/* "$out/Applications/Jellyfin Media Player.app/Contents/Resources/"
+      rmdir $out/Resources
 
-        ln -s "$out/Applications/Jellyfin Media Player.app/Contents/MacOS/Jellyfin Media Player" $out/bin/jellyfinmediaplayer
-      '');
+      ln -s "$out/Applications/Jellyfin Media Player.app/Contents/MacOS/Jellyfin Media Player" $out/bin/jellyfinmediaplayer
+    '';
 
     passthru.updateScript = concatStringsSep " " (nix-update-script {
       extraArgs = ["--flake" pname];
