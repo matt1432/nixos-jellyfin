@@ -2,10 +2,6 @@
   lib,
   fetchFromGitHub,
   stdenv,
-  Cocoa ? null,
-  CoreAudio ? null,
-  CoreFoundation ? null,
-  MediaPlayer ? null,
   SDL2,
   cmake,
   libGL,
@@ -13,7 +9,6 @@
   libXrandr,
   libvdpau,
   mpv,
-  nix-update-script,
   ninja,
   pkg-config,
   python3,
@@ -23,7 +18,7 @@
   withDbus ? stdenv.hostPlatform.isLinux,
   ...
 }: let
-  inherit (lib) concatStringsSep optionals optionalString;
+  inherit (lib) optionals optionalString;
 
   pname = "jellyfin-media-player";
   version = "1.12.0";
@@ -60,12 +55,6 @@ in
       ]
       ++ optionals stdenv.hostPlatform.isLinux [
         qt5.qtwayland
-      ]
-      ++ optionals stdenv.hostPlatform.isDarwin [
-        Cocoa
-        CoreAudio
-        CoreFoundation
-        MediaPlayer
       ];
 
     nativeBuildInputs = [
@@ -93,17 +82,8 @@ in
     postInstall = optionalString stdenv.hostPlatform.isDarwin ''
       mkdir -p $out/bin $out/Applications
       mv "$out/Jellyfin Media Player.app" $out/Applications
-
-      # move web-client resources
-      mv $out/Resources/* "$out/Applications/Jellyfin Media Player.app/Contents/Resources/"
-      rmdir $out/Resources
-
       ln -s "$out/Applications/Jellyfin Media Player.app/Contents/MacOS/Jellyfin Media Player" $out/bin/jellyfinmediaplayer
     '';
-
-    passthru.updateScript = concatStringsSep " " (nix-update-script {
-      extraArgs = ["--flake" pname];
-    });
 
     meta = with lib; {
       homepage = "https://github.com/jellyfin/jellyfin-media-player";

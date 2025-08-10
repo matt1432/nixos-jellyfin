@@ -2,11 +2,10 @@
   fetchFromGitHub,
   ffmpeg_7-full,
   lib,
-  nix-update-script,
   fromCUDA ? false,
   ...
 }: let
-  inherit (lib) concatStringsSep optionals;
+  inherit (lib) optionals;
 
   pname = "jellyfin-ffmpeg";
   version = "7.1.1-7";
@@ -34,6 +33,7 @@ in
       ];
 
     # Clobber upstream patches as they don't apply to the Jellyfin fork
+    # except cuda patch
     patches = [] ++ optionals fromCUDA [./nvccflags-cpp14.patch];
 
     postPatch = ''
@@ -43,15 +43,6 @@ in
 
       ${old.postPatch or ""}
     '';
-
-    passthru.updateScript = concatStringsSep " " (nix-update-script {
-      extraArgs = [
-        "--flake"
-        pname
-        "--override-filename"
-        "./pkgs/jellyfin-ffmpeg/default.nix"
-      ];
-    });
 
     meta = {
       inherit (old.meta) license mainProgram;

@@ -4,7 +4,6 @@
   fetchFromGitHub,
   buildNpmPackage,
   nodejs_20,
-  nix-update-script,
   pkg-config,
   xcbuild,
   pango,
@@ -13,7 +12,7 @@
   forceEnableBackdrops ? false,
   forceDisablePreferFmp4 ? false,
 }: let
-  inherit (lib) concatStringsSep optionals optionalString;
+  inherit (lib) optionals optionalString;
 
   pname = "jellyfin-web";
   version = "10.10.7";
@@ -72,10 +71,6 @@ in
 
       runHook postInstall
     '';
-
-    passthru.updateScript = concatStringsSep " " (nix-update-script {
-      extraArgs = ["--flake" pname];
-    });
 
     meta = with lib; {
       description = "Web Client for Jellyfin";
