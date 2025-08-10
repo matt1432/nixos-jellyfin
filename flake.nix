@@ -1,10 +1,10 @@
 {
   inputs = {
     nixpkgs = {
-      type = "github";
-      owner = "NixOS";
-      repo = "nixpkgs";
+      type = "git";
+      url = "https://github.com/NixOS/nixpkgs";
       ref = "nixos-unstable";
+      shallow = true;
     };
 
     systems = {
