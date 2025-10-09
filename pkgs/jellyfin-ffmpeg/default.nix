@@ -1,5 +1,6 @@
 {
   fetchFromGitHub,
+  fetchpatch2,
   ffmpeg_7-full,
   lib,
   fromCUDA ? false,
@@ -34,7 +35,15 @@ in
 
     # Clobber upstream patches as they don't apply to the Jellyfin fork
     # except cuda patch
-    patches = [] ++ optionals fromCUDA [./nvccflags-cpp14.patch];
+    patches =
+      [
+        (fetchpatch2 {
+          name = "lcevcdec-4.0.0-compat.patch";
+          url = "https://code.ffmpeg.org/FFmpeg/FFmpeg/commit/fa23202cc7baab899894e8d22d82851a84967848.patch";
+          hash = "sha256-Ixkf1xzuDGk5t8J/apXKtghY0X9cfqSj/q987zrUuLQ=";
+        })
+      ]
+      ++ optionals fromCUDA [./nvccflags-cpp14.patch];
 
     postPatch = ''
       for file in $(cat debian/patches/series); do
