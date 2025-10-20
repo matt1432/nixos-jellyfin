@@ -10,7 +10,7 @@
   ...
 }: let
   pname = "jellyfin";
-  version = "10.10.7";
+  version = "10.11.0";
 in
   buildDotnetModule rec {
     inherit pname version;
@@ -19,7 +19,7 @@ in
       owner = "jellyfin";
       repo = pname;
       rev = "v${version}";
-      hash = "sha256-GWpzX8DvCafHb5V9it0ZPTXKm+NbLS7Oepe/CcMiFuI=";
+      hash = "sha256-8kvN2ZugmjjgSMepDdP9tc48362b6w+RpIsp/IXaivM=";
     };
 
     propagatedBuildInputs = [
@@ -34,8 +34,8 @@ in
       freetype
       jellyfin-ffmpeg
     ];
-    dotnet-sdk = dotnetCorePackages.sdk_8_0;
-    dotnet-runtime = dotnetCorePackages.aspnetcore_8_0;
+    dotnet-sdk = dotnetCorePackages.sdk_9_0;
+    dotnet-runtime = dotnetCorePackages.aspnetcore_9_0;
     dotnetBuildFlags = ["--no-self-contained"];
 
     passthru.updateScript = ./update.sh;
