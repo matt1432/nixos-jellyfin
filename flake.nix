@@ -78,7 +78,7 @@
             text = ''
               nix build .#jellyfin --print-build-logs
               nix build .#jellyfin-web --print-build-logs
-              nix build .#jellyfin-media-player --print-build-logs
+              # nix build .#jellyfin-media-player --print-build-logs
               nix build .#jellyfin-ffmpeg --print-build-logs
             '';
           })

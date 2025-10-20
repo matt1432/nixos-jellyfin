@@ -11,13 +11,13 @@ if [[ "$1" == "--commit" ]]; then
 
     nix-update --flake "jellyfin" --commit
     nix-update --flake "jellyfin-web" --commit
-    nix-update --flake "jellyfin-media-player" --commit
+    # nix-update --flake "jellyfin-media-player" --commit
     nix-update --flake "jellyfin-ffmpeg" --commit
 
     git restore .
 else
     nix-update --flake "jellyfin"
     nix-update --flake "jellyfin-web"
-    nix-update --flake "jellyfin-media-player"
+    # nix-update --flake "jellyfin-media-player"
     nix-update --flake "jellyfin-ffmpeg"
 fi
