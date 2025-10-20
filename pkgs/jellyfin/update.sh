@@ -1,7 +1,7 @@
 #!/usr/bin/env -S nix develop .#update -c bash
 
 # TODO: fix nuget deps updates with flakes in upstream nix-update
-commit_msg="$(nix-update --src-only --flake jellyfin "${@:2}" --print-commit-message)"
+commit_msg="$(nix-update --src-only --flake jellyfin "${@:2}" --print-commit-message | tail -n 5)"
 
 depsFile="./pkgs/jellyfin/nuget-deps.json"
 
