@@ -6,5 +6,6 @@ final: prev: {
   jellyfin-ffmpeg = final.callPackage ./jellyfin-ffmpeg {};
   jellyfin-ffmpeg-cuda = final.cudaPackages.callPackage ./jellyfin-ffmpeg {fromCUDA = true;};
 
-  jellyfin-media-player = final.callPackage ./jellyfin-media-player ({} // final.qt5);
+  # FIXME: uses insecure packages
+  # jellyfin-media-player = final.callPackage ./jellyfin-media-player ({} // final.qt5);
 }
