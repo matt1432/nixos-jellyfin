@@ -3,6 +3,7 @@
   fetchFromGitHub,
   fetchpatch,
   stdenv,
+  mkDerivation,
   SDL2,
   cmake,
   libGL,
@@ -28,7 +29,7 @@
   pname = "jellyfin-media-player";
   version = "1.12.0";
 in
-  stdenv.mkDerivation {
+  mkDerivation {
     inherit pname version;
 
     src = fetchFromGitHub {
