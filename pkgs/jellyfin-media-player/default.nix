@@ -1,6 +1,7 @@
 {
   lib,
   fetchFromGitHub,
+  fetchpatch,
   stdenv,
   SDL2,
   cmake,
@@ -12,7 +13,11 @@
   ninja,
   pkg-config,
   python3,
-  qt5,
+  qtbase,
+  qtwayland,
+  qtwebchannel,
+  qtwebengine,
+  qtx11extras,
   jellyfin-web,
   # Options as overrides
   withDbus ? stdenv.hostPlatform.isLinux,
@@ -38,6 +43,12 @@ in
       ./fix-web-path.patch
       # disable update notifications since the end user can't simply download the release artifacts to update
       ./disable-update-notifications.patch
+
+      # cmake 4 compatibility
+      (fetchpatch {
+        url = "https://github.com/jellyfin/jellyfin-media-player/commit/6c5c603a1db489872832ed560581d98fdee89d6f.patch";
+        hash = "sha256-Blq7y7kOygbZ6uKxPJl9aDXJWqhE0jnM5GNEAwyQEA0=";
+      })
     ];
 
     buildInputs =
@@ -48,13 +59,13 @@ in
         libXrandr
         libvdpau
         mpv
-        qt5.qtbase
-        qt5.qtwebchannel
-        qt5.qtwebengine
-        qt5.qtx11extras
+        qtbase
+        qtwebchannel
+        qtwebengine
+        qtx11extras
       ]
       ++ optionals stdenv.hostPlatform.isLinux [
-        qt5.qtwayland
+        qtwayland
       ];
 
     nativeBuildInputs = [
@@ -62,12 +73,11 @@ in
       ninja
       pkg-config
       python3
-      qt5.wrapQtAppsHook
     ];
 
     cmakeFlags =
       [
-        "-DQTROOT=${qt5.qtbase}"
+        "-DQTROOT=${qtbase}"
         "-GNinja"
       ]
       ++ optionals (!withDbus) [
@@ -85,11 +95,19 @@ in
       ln -s "$out/Applications/Jellyfin Media Player.app/Contents/MacOS/Jellyfin Media Player" $out/bin/jellyfinmediaplayer
     '';
 
-    meta = with lib; {
+    meta = {
       homepage = "https://github.com/jellyfin/jellyfin-media-player";
       description = "Jellyfin Desktop Client based on Plex Media Player";
-      license = with licenses; [gpl2Only mit];
-      platforms = ["aarch64-linux" "x86_64-linux" "x86_64-darwin"];
+      license = with lib.licenses; [
+        gpl2Only
+        mit
+      ];
+      platforms = [
+        "aarch64-linux"
+        "x86_64-linux"
+        "aarch64-darwin"
+        "x86_64-darwin"
+      ];
       mainProgram = "jellyfinmediaplayer";
     };
   }
