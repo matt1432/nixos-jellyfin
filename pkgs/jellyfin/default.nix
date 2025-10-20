@@ -38,6 +38,8 @@ in
     dotnet-runtime = dotnetCorePackages.aspnetcore_8_0;
     dotnetBuildFlags = ["--no-self-contained"];
 
+    passthru.updateScript = ./update.sh;
+
     meta = {
       description = "The Free Software Media System";
       homepage = "https://jellyfin.org/";
