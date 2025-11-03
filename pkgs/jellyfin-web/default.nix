@@ -15,7 +15,7 @@
   inherit (lib) optionals optionalString;
 
   pname = "jellyfin-web";
-  version = "10.11.1";
+  version = "10.11.2";
 in
   buildNpmPackage {
     inherit pname version;
@@ -26,10 +26,10 @@ in
       owner = "jellyfin";
       repo = pname;
       rev = "v${version}";
-      hash = "sha256-1T2+9o/K8w7Roflb/LWOYabuol14fHK4fnMxkrf2L88=";
+      hash = "sha256-xgZ2fh2dMpcvXXUWcZSvcARm4Qy8qgi8T5nFyk+sOgs=";
     };
 
-    npmDepsHash = "sha256-5vNlT9RhY/I+nHVjMfJAsBqPT8ndOJe4KO0Ysl2t1tY=";
+    npmDepsHash = "sha256-Uikude8cNBA79KNPf6D0McwR/AoaaWJVMw2Q08AiK3U=";
 
     postPatch =
       ''
