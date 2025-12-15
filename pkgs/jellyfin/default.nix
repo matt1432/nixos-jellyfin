@@ -10,7 +10,7 @@
   ...
 }: let
   pname = "jellyfin";
-  version = "10.11.4";
+  version = "10.11.5";
 in
   buildDotnetModule rec {
     inherit pname version;
@@ -19,7 +19,7 @@ in
       owner = "jellyfin";
       repo = pname;
       rev = "v${version}";
-      hash = "sha256-Hs7G8igW7TJBTYuv83AhN/YhpLcO5pwuU5vYwDUEsUQ=";
+      hash = "sha256-MOzMSubYkxz2kwpvamaOwz3h8drEgeSoiE9Gwassmbk=";
     };
 
     propagatedBuildInputs = [
