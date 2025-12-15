@@ -21,7 +21,7 @@ The `web` package that acts as the frontend
 - [jellyfin-ffmpeg](https://github.com/jellyfin/jellyfin-ffmpeg):
 The ffmpeg package forked by the jellyfin team
 
-- [jellyfin-media-player](https://github.com/jellyfin/jellyfin-media-player):
+- [jellyfin-desktop](https://github.com/jellyfin/jellyfin-desktop):
 The desktop client
 
 ## Module

@@ -46,7 +46,7 @@
     };
 
     packages = perSystemWithCUDA (pkgs: cudaPkgs: {
-      inherit (pkgs) jellyfin jellyfin-web jellyfin-ffmpeg jellyfin-media-player;
+      inherit (pkgs) jellyfin jellyfin-web jellyfin-ffmpeg jellyfin-desktop;
       inherit (cudaPkgs) jellyfin-ffmpeg-cuda;
     });
 
@@ -78,7 +78,7 @@
             text = ''
               nix build .#jellyfin --print-build-logs
               nix build .#jellyfin-web --print-build-logs
-              # nix build .#jellyfin-media-player --print-build-logs
+              nix build .#jellyfin-desktop --print-build-logs
               nix build .#jellyfin-ffmpeg --print-build-logs
             '';
           })

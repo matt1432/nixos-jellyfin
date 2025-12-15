@@ -16,13 +16,13 @@ if [[ "$1" == "--commit" ]]; then
 
     updatePackage "jellyfin" --commit
     nix-update --flake "jellyfin-web" --commit
-    # nix-update --flake "jellyfin-media-player" --commit
+    nix-update --flake "jellyfin-desktop" --commit
     nix-update --flake "jellyfin-ffmpeg" --commit --override-filename ./pkgs/jellyfin-ffmpeg/default.nix
 
     git restore .
 else
     updatePackage "jellyfin"
     nix-update --flake "jellyfin-web"
-    # nix-update --flake "jellyfin-media-player"
+    nix-update --flake "jellyfin-desktop"
     nix-update --flake "jellyfin-ffmpeg" --override-filename ./pkgs/jellyfin-ffmpeg/default.nix
 fi
