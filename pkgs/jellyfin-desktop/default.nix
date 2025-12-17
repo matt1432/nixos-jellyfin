@@ -54,6 +54,10 @@ in
       ]
       ++ lib.optional (!stdenv.hostPlatform.isDarwin) mpvqt;
 
+    qtWrapperArgs = [
+      "--set QT_STYLE_OVERRIDE Fusion"
+    ];
+
     cmakeFlags =
       [
         "-DCHECK_FOR_UPDATES=OFF"
