@@ -15,6 +15,7 @@
   libcec,
   SDL2,
   libXrandr,
+  cacert,
 }: let
   pname = "jellyfin-desktop";
   version = "2.0.0";
@@ -29,13 +30,17 @@ in
       hash = "sha256-ITlYOrMS6COx9kDRSBi4wM6mzL/Q2G5X9GbABwDIOe4=";
       fetchSubmodules = true;
     };
-
-    nativeBuildInputs = [
-      cmake
-      ninja
-      python3
-      wrapQtAppsHook
+    patches = [
+      ./non-fatal-unique-app.patch
     ];
+
+    nativeBuildInputs =
+      [
+        cmake
+        ninja
+        wrapQtAppsHook
+      ]
+      ++ lib.optional stdenv.hostPlatform.isDarwin python3;
 
     buildInputs =
       [
@@ -51,12 +56,10 @@ in
 
         # frame rate switching
         libXrandr
+
+        cacert
       ]
       ++ lib.optional (!stdenv.hostPlatform.isDarwin) mpvqt;
-
-    qtWrapperArgs = [
-      "--set QT_STYLE_OVERRIDE Fusion"
-    ];
 
     cmakeFlags =
       [
@@ -66,6 +69,11 @@ in
       ]
       ++ lib.optional stdenv.hostPlatform.isDarwin "-DUSE_STATIC_MPVQT=ON"
       ++ lib.optional (!stdenv.hostPlatform.isDarwin) "-DUSE_STATIC_MPVQT=OFF";
+
+    qtWrapperArgs = [
+      "--set QT_STYLE_OVERRIDE Fusion"
+      "--set NIX_SSL_CERT_FILE ${cacert}/etc/ssl/certs/ca-bundle.crt"
+    ];
 
     postInstall = lib.optionalString stdenv.hostPlatform.isDarwin ''
       mkdir -p $out/bin $out/Applications
