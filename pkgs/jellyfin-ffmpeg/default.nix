@@ -42,6 +42,11 @@ in
           url = "https://code.ffmpeg.org/FFmpeg/FFmpeg/commit/fa23202cc7baab899894e8d22d82851a84967848.patch";
           hash = "sha256-Ixkf1xzuDGk5t8J/apXKtghY0X9cfqSj/q987zrUuLQ=";
         })
+        (fetchpatch2 {
+          name = "unbreak-hardcoded-tables.patch";
+          url = "https://git.ffmpeg.org/gitweb/ffmpeg.git/patch/1d47ae65bf6df91246cbe25c997b25947f7a4d1d";
+          hash = "sha256-ulB5BujAkoRJ8VHou64Th3E94z6m+l6v9DpG7/9nYsM=";
+        })
       ]
       ++ optionals fromCUDA [./nvccflags-cpp14.patch];
 
