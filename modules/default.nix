@@ -209,7 +209,6 @@ in {
         "--configdir '${cfg.configDir}'"
         "--cachedir '${cfg.cacheDir}'"
         "--logdir '${cfg.logDir}'"
-        "--ffmpeg '${cfg.ffmpegPackage}/bin/ffmpeg'"
         "--webdir '${cfg.dataDir}/jellyfin-web'"
       ]);
     };

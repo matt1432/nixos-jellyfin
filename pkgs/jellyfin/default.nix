@@ -1,51 +1,61 @@
 {
   lib,
-  buildDotnetModule,
-  dotnetCorePackages,
   fetchFromGitHub,
+  dotnetCorePackages,
+  buildDotnetModule,
+  jellyfin-ffmpeg,
   fontconfig,
   freetype,
-  jellyfin-ffmpeg,
+  # jellyfin-web,
   sqlite,
-  ...
-}: let
+  versionCheckHook,
+}:
+buildDotnetModule (finalAttrs: {
   pname = "jellyfin";
   version = "10.11.5";
-in
-  buildDotnetModule rec {
-    inherit pname version;
 
-    src = fetchFromGitHub {
-      owner = "jellyfin";
-      repo = pname;
-      rev = "v${version}";
-      hash = "sha256-MOzMSubYkxz2kwpvamaOwz3h8drEgeSoiE9Gwassmbk=";
-    };
+  src = fetchFromGitHub {
+    owner = "jellyfin";
+    repo = "jellyfin";
+    tag = "v${finalAttrs.version}";
+    hash = "sha256-MOzMSubYkxz2kwpvamaOwz3h8drEgeSoiE9Gwassmbk=";
+  };
 
-    propagatedBuildInputs = [
-      sqlite
-    ];
+  propagatedBuildInputs = [sqlite];
 
-    projectFile = "Jellyfin.Server/Jellyfin.Server.csproj";
-    executables = ["jellyfin"];
-    nugetDeps = ./nuget-deps.json;
-    runtimeDeps = [
-      fontconfig
-      freetype
-      jellyfin-ffmpeg
-    ];
-    dotnet-sdk = dotnetCorePackages.sdk_9_0;
-    dotnet-runtime = dotnetCorePackages.aspnetcore_9_0;
-    dotnetBuildFlags = ["--no-self-contained"];
+  projectFile = "Jellyfin.Server/Jellyfin.Server.csproj";
+  executables = ["jellyfin"];
+  nugetDeps = ./nuget-deps.json;
+  runtimeDeps = [
+    jellyfin-ffmpeg
+    fontconfig
+    freetype
+  ];
+  dotnet-sdk = dotnetCorePackages.sdk_9_0;
+  dotnet-runtime = dotnetCorePackages.aspnetcore_9_0;
+  dotnetBuildFlags = ["--no-self-contained"];
 
-    passthru.updateScript = ./update.sh;
+  makeWrapperArgs = [
+    "--add-flags"
+    "--ffmpeg=${jellyfin-ffmpeg}/bin/ffmpeg"
+    # Handled in module
+    # "--add-flags"
+    # "--webdir=${jellyfin-web}/share/jellyfin-web"
+  ];
 
-    meta = {
-      description = "The Free Software Media System";
-      homepage = "https://jellyfin.org/";
-      # https://github.com/jellyfin/jellyfin/issues/610#issuecomment-537625510
-      license = lib.licenses.gpl2Plus;
-      mainProgram = "jellyfin";
-      platforms = dotnet-runtime.meta.platforms;
-    };
-  }
+  nativeInstallCheckInputs = [
+    versionCheckHook
+  ];
+  doInstallCheck = true;
+
+  passthru.updateScript = ./update.sh;
+
+  meta = {
+    description = "Free Software Media System";
+    homepage = "https://jellyfin.org/";
+    # https://github.com/jellyfin/jellyfin/issues/610#issuecomment-537625510
+    license = lib.licenses.gpl2Plus;
+    mainProgram = "jellyfin";
+    platforms = finalAttrs.dotnet-runtime.meta.platforms;
+  };
+})
