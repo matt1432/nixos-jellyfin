@@ -6,20 +6,22 @@
   jellyfin-ffmpeg,
   fontconfig,
   freetype,
-  # jellyfin-web,
+  jellyfin-web,
   sqlite,
   versionCheckHook,
+  ...
 }:
 buildDotnetModule (finalAttrs: {
   pname = "jellyfin";
   version = "10.11.5";
 
-  src = fetchFromGitHub {
-    owner = "jellyfin";
-    repo = "jellyfin";
-    tag = "v${finalAttrs.version}";
-    hash = "sha256-MOzMSubYkxz2kwpvamaOwz3h8drEgeSoiE9Gwassmbk=";
-  };
+  src = assert finalAttrs.version == jellyfin-web.version;
+    fetchFromGitHub {
+      owner = "jellyfin";
+      repo = "jellyfin";
+      tag = "v${finalAttrs.version}";
+      hash = "sha256-MOzMSubYkxz2kwpvamaOwz3h8drEgeSoiE9Gwassmbk=";
+    };
 
   propagatedBuildInputs = [sqlite];
 

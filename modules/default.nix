@@ -9,14 +9,19 @@ self: {
     boolToString
     concatStringsSep
     concatMapStringsSep
+    head
     literalExpression
     mkForce
     mkIf
     mkOption
     optionals
+    optionalAttrs
     optionalString
+    splitString
     types
     ;
+
+  inherit (builtins) functionArgs;
 
   cfg = config.services.jellyfin;
 
@@ -133,9 +138,14 @@ in {
     finalPackage = mkOption {
       type = types.package;
       readOnly = true;
-      default = cfg.package.override {
-        jellyfin-ffmpeg = cfg.ffmpegPackage;
-      };
+      default = let
+        pkgFile = head (splitString [":"] cfg.package.meta.position);
+        args = functionArgs (import pkgFile);
+      in
+        cfg.package.override ({
+            jellyfin-ffmpeg = cfg.ffmpegPackage;
+          }
+          // optionalAttrs (args ? "jellyfin-web") {jellyfin-web = cfg.webPackage;});
       defaultText = literalExpression ''
         pkgs.jellyfin.override {
           jellyfin-ffmpeg = pkgs.jellyfin-ffmpeg;
