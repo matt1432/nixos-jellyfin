@@ -13,6 +13,7 @@ self: {
     mkForce
     mkIf
     mkOption
+    optionals
     optionalString
     types
     ;
@@ -83,6 +84,25 @@ self: {
   encodingFile = importXML "encoding" cfg.settings.encoding;
   metadataFile = importXML "metadata" cfg.settings.metadata;
   systemFile = importXML "system" cfg.settings.system;
+
+  configSetupCmds = concatMapStringsSep "\n" (x: mkConfigSetup x.file x.name) [
+    {
+      file = brandingFile;
+      name = "branding";
+    }
+    {
+      file = encodingFile;
+      name = "encoding";
+    }
+    {
+      file = systemFile;
+      name = "system";
+    }
+    {
+      file = metadataFile;
+      name = "metadata";
+    }
+  ];
 in {
   options.services.jellyfin = {
     webPackage = mkOption {
@@ -159,11 +179,11 @@ in {
     };
   };
 
-  config = mkIf (cfg.enable && cfg.settings != null) {
+  config = mkIf cfg.enable {
     nixpkgs.overlays = [self.overlays.default];
 
     systemd.services."jellyfin" = {
-      restartTriggers = [(builtins.toJSON cfg.settings)];
+      restartTriggers = optionals (cfg.settings != null) [(builtins.toJSON cfg.settings)];
 
       preStart = ''
         # Make jellyfin-web read/write
@@ -178,24 +198,7 @@ in {
             fi
         }
 
-        ${concatMapStringsSep "\n" (x: mkConfigSetup x.file x.name) [
-          {
-            file = brandingFile;
-            name = "branding";
-          }
-          {
-            file = encodingFile;
-            name = "encoding";
-          }
-          {
-            file = systemFile;
-            name = "system";
-          }
-          {
-            file = metadataFile;
-            name = "metadata";
-          }
-        ]}
+        ${optionalString (cfg.settings != null) configSetupCmds}
 
         chmod u+w -R "${cfg.dataDir}/jellyfin-web"
       '';
