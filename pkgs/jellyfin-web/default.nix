@@ -30,7 +30,7 @@ buildNpmPackage (finalAttrs: {
     # bash
     ''
       substituteInPlace webpack.common.js \
-        --replace-fail "git describe --always --dirty" "echo ${finalAttrs.src.rev}" \
+        --replace-fail "git describe --always --dirty" "echo ${finalAttrs.src.rev}"
     ''
     + lib.optionalString forceEnableBackdrops
     # bash
