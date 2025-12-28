@@ -7,6 +7,7 @@
   fontconfig,
   freetype,
   jellyfin-web,
+  coreutils,
   sqlite,
   versionCheckHook,
   ...
@@ -40,10 +41,23 @@ buildDotnetModule (finalAttrs: {
   makeWrapperArgs = [
     "--add-flags"
     "--ffmpeg=${jellyfin-ffmpeg}/bin/ffmpeg"
-    # Handled in module
-    # "--add-flags"
-    # "--webdir=${jellyfin-web}/share/jellyfin-web"
+    "--add-flags"
+    "--webdir=$webdir/jellyfin-web"
   ];
+
+  # Make jellyfin-web writeable for some plugins
+  preInstall = ''
+    makeWrapperArgs+=(
+      --run '
+          PATH="$PATH:${coreutils}/bin"
+          webdir=$(mktemp --tmpdir -d jellyfin-web.XXXXXX)
+          trap "rm -rf $webdir" EXIT
+          chmod a+rx "$webdir"
+          cp -r ${jellyfin-web}/share/jellyfin-web "$webdir"
+          chmod u+w -R "$webdir/jellyfin-web"
+      '
+    )
+  '';
 
   nativeInstallCheckInputs = [
     versionCheckHook

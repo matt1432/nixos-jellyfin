@@ -14,7 +14,6 @@ self: {
     mkForce
     mkIf
     mkOption
-    optionals
     optionalAttrs
     optionalString
     splitString
@@ -192,36 +191,30 @@ in {
   config = mkIf cfg.enable {
     nixpkgs.overlays = [self.overlays.default];
 
-    systemd.services."jellyfin" = {
-      restartTriggers = optionals (cfg.settings != null) [(builtins.toJSON cfg.settings)];
+    systemd.services."jellyfin" =
+      {
+        serviceConfig.ExecStart = mkForce (concatStringsSep " " [
+          "${cfg.finalPackage}/bin/jellyfin"
+          "--datadir '${cfg.dataDir}'"
+          "--configdir '${cfg.configDir}'"
+          "--cachedir '${cfg.cacheDir}'"
+          "--logdir '${cfg.logDir}'"
+        ]);
+      }
+      // optionalAttrs (cfg.settings != null) {
+        restartTriggers = [(builtins.toJSON cfg.settings)];
 
-      preStart = ''
-        # Make jellyfin-web read/write
-        chmod u+w -R "${cfg.dataDir}/jellyfin-web"
-        rm -rf ${cfg.dataDir}/jellyfin-web
-        cp -r ${cfg.webPackage}/share/jellyfin-web ${cfg.dataDir}
+        preStart = ''
+          backupFile() {
+              if [ -w "$1" ]; then
+                  rm -f "$1.bak"
+                  mv "$1" "$1.bak"
+              fi
+          }
 
-        backupFile() {
-            if [ -w "$1" ]; then
-                rm -f "$1.bak"
-                mv "$1" "$1.bak"
-            fi
-        }
-
-        ${optionalString (cfg.settings != null) configSetupCmds}
-
-        chmod u+w -R "${cfg.dataDir}/jellyfin-web"
-      '';
-
-      serviceConfig.ExecStart = mkForce (concatStringsSep " " [
-        "${cfg.finalPackage}/bin/jellyfin"
-        "--datadir '${cfg.dataDir}'"
-        "--configdir '${cfg.configDir}'"
-        "--cachedir '${cfg.cacheDir}'"
-        "--logdir '${cfg.logDir}'"
-        "--webdir '${cfg.dataDir}/jellyfin-web'"
-      ]);
-    };
+          ${configSetupCmds}
+        '';
+      };
   };
 
   # For accurate stack trace
