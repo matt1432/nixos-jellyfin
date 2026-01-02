@@ -294,7 +294,13 @@ in {
     description = mdDocs '''';
   };
 
-  enableGroupingIntoCollections = mkOption {
+  enableGroupingMoviesIntoCollections = mkOption {
+    type = types.bool;
+    default = false;
+    description = mdDocs '''';
+  };
+
+  enableGroupingShowsIntoCollections = mkOption {
     type = types.bool;
     default = false;
     description = mdDocs '''';

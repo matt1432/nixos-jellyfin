@@ -47,7 +47,8 @@ xml
   ${mkStringArray cfg.contentTypes "ContentTypes" false}
     <RemoteClientBitrateLimit>${toString cfg.remoteClientBitrateLimit}</RemoteClientBitrateLimit>
     ${mkBool cfg.enableFolderView "EnableFolderView"}
-    ${mkBool cfg.enableGroupingIntoCollections "EnableGroupingIntoCollections"}
+    ${mkBool cfg.enableGroupingMoviesIntoCollections "EnableGroupingMoviesIntoCollections"}
+    ${mkBool cfg.enableGroupingShowsIntoCollections "EnableGroupingShowsIntoCollections"}
     ${mkBool cfg.displaySpecialsWithinSeasons "DisplaySpecialsWithinSeasons"}
   ${mkStringArray cfg.codecsUsed "CodecsUsed" false}
     <PluginRepositories>
