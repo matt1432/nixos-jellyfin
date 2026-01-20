@@ -1,8 +1,10 @@
 #!/usr/bin/env -S nix develop .#update -c bash
 
-updatePackage() {
-    script="$(nix eval --raw .#"$1".updateScript)"
-    $script "${@:2}"
+updateJellyfin() {
+    sed -i 's/assert finalAttrs.version/# assert finalAttrs.version/' ./pkgs/jellyfin/default.nix
+    script="$(nix eval --raw .#jellyfin.updateScript)"
+    $script "$@"
+    sed -i 's/# assert finalAttrs.version/assert finalAttrs.version/' ./pkgs/jellyfin/default.nix
 }
 
 if [[ "$1" == "--commit" ]]; then
@@ -14,14 +16,14 @@ if [[ "$1" == "--commit" ]]; then
     git add ./flake.lock
     git commit -m "chore: update flake.lock"
 
-    updatePackage "jellyfin" --commit
+    updateJellyfin --commit
     nix-update --flake "jellyfin-web" --commit
     nix-update --flake "jellyfin-desktop" --commit
     nix-update --flake "jellyfin-ffmpeg" --commit --override-filename ./pkgs/jellyfin-ffmpeg/default.nix
 
     git restore .
 else
-    updatePackage "jellyfin"
+    updateJellyfin
     nix-update --flake "jellyfin-web"
     nix-update --flake "jellyfin-desktop"
     nix-update --flake "jellyfin-ffmpeg" --override-filename ./pkgs/jellyfin-ffmpeg/default.nix
