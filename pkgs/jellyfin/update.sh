@@ -11,7 +11,7 @@ $fetchDeps "$depsFile"
 
 echo "$commit_msg"
 
-if [[ "$1" == "--commit" ]] && [[ "$commit_msg" != "" ]]; then
+if [[ "$1" == "--commit" ]] && [[ "$(echo "$commit_msg" | grep -o 'Not updating version' || echo "")" == "" ]]; then
     git add "$depsFile" ./pkgs/jellyfin/default.nix
     git commit -m "$commit_msg"
 fi
