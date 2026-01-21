@@ -16,7 +16,7 @@ buildDotnetModule (finalAttrs: {
   pname = "jellyfin";
   version = "10.11.6";
 
-  src = # assert finalAttrs.version == jellyfin-web.version;
+  src = assert finalAttrs.version == jellyfin-web.version;
     fetchFromGitHub {
       owner = "jellyfin";
       repo = "jellyfin";
