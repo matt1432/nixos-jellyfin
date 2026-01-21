@@ -3,7 +3,7 @@
 updateJellyfin() {
     sed -i 's/assert finalAttrs.version/# assert finalAttrs.version/' ./pkgs/jellyfin/default.nix
     script="$(nix eval --raw .#jellyfin.updateScript)"
-    $script "$@"
+    $script "$@" || true
     sed -i 's/# assert finalAttrs.version/assert finalAttrs.version/' ./pkgs/jellyfin/default.nix
 }
 
