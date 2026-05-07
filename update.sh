@@ -1,10 +1,8 @@
 #!/usr/bin/env -S nix develop .#update -c bash
 
 updateJellyfin() {
-    sed -i 's/assert finalAttrs.version/# assert finalAttrs.version/' ./pkgs/jellyfin/default.nix
     script="$(nix eval --raw .#jellyfin.updateScript)"
     $script "$@"
-    sed -i 's/# assert finalAttrs.version/assert finalAttrs.version/' ./pkgs/jellyfin/default.nix
 }
 
 if [[ "$1" == "--commit" ]]; then
