@@ -14,14 +14,14 @@
 }:
 buildDotnetModule (finalAttrs: {
   pname = "jellyfin";
-  version = "10.11.8";
+  version = "10.11.9";
 
   src = assert finalAttrs.version == jellyfin-web.version;
     fetchFromGitHub {
       owner = "jellyfin";
       repo = "jellyfin";
       tag = "v${finalAttrs.version}";
-      hash = "sha256-wBf561mZvC65Hu4MHHSu8YeILQDp/WN9vGA+JxGXwE8=";
+      hash = "sha256-ksjOG1XcXYzl6tE6rYblfuKBIukXOVawBEu4i50MbUY=";
     };
 
   propagatedBuildInputs = [sqlite];
