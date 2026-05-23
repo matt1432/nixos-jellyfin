@@ -3,7 +3,7 @@
   stdenv,
   fetchFromGitHub,
   buildNpmPackage,
-  nodejs_20,
+  nodejs_22,
   pkg-config,
   xcbuild,
   pango,
@@ -24,7 +24,7 @@ buildNpmPackage (finalAttrs: {
     hash = "sha256-+WKFwnMjDX6HK5+6HVJyppFspbuuuKGtc8jCR4hqBL4=";
   };
 
-  nodejs = nodejs_20; # https://github.com/NixOS/nixpkgs/blob/95879b2866c0517cea97ed12ef5d812d5485995e/pkgs/by-name/je/jellyfin-web/package.nix#L29
+  nodejs = nodejs_22;
 
   postPatch =
     # bash
