@@ -34,16 +34,7 @@ in
       ];
 
     # Clobber upstream patches as they don't apply to the Jellyfin fork
-    # except cuda patch
-    patches =
-      [
-        (fetchpatch2 {
-          name = "unbreak-hardcoded-tables.patch";
-          url = "https://git.ffmpeg.org/gitweb/ffmpeg.git/patch/1d47ae65bf6df91246cbe25c997b25947f7a4d1d";
-          hash = "sha256-ulB5BujAkoRJ8VHou64Th3E94z6m+l6v9DpG7/9nYsM=";
-        })
-      ]
-      ++ optionals fromCUDA [./nvccflags-cpp14.patch];
+    patches = [] ++ optionals fromCUDA [./nvccflags-cpp14.patch];
 
     postPatch = ''
       for file in $(cat debian/patches/series); do
