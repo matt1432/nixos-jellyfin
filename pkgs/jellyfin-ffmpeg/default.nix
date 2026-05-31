@@ -1,7 +1,6 @@
 {
   fetchFromGitHub,
-  fetchpatch2,
-  ffmpeg_7-full,
+  ffmpeg_8-full,
   lib,
   fromCUDA ? false,
   ...
@@ -11,7 +10,7 @@
   pname = "jellyfin-ffmpeg";
   version = "8.1.1-1";
 in
-  (ffmpeg_7-full.override {
+  (ffmpeg_8-full.override {
     inherit version; # Important! This sets the ABI.
 
     source = fetchFromGitHub {
@@ -30,7 +29,6 @@ in
       old.configureFlags
       ++ [
         "--extra-version=Jellyfin"
-        "--disable-ptx-compression" # https://github.com/jellyfin/jellyfin/issues/7944#issuecomment-1156880067
       ];
 
     # Clobber upstream patches as they don't apply to the Jellyfin fork
