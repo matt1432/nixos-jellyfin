@@ -9,7 +9,7 @@
   inherit (lib) optionals;
 
   pname = "jellyfin-ffmpeg";
-  version = "7.1.4-1";
+  version = "8.1.1-1";
 in
   (ffmpeg_7-full.override {
     inherit version; # Important! This sets the ABI.
@@ -18,7 +18,7 @@ in
       owner = "jellyfin";
       repo = pname;
       rev = "v${version}";
-      hash = "sha256-VijSSbtcaeQNf1UwpPKTIfzAHHp2BHvBdhXeigTQEbI=";
+      hash = "sha256-ITTnqMDQFabzE+LOcM4Mft7Ctmxut2g04JAUWt1JoHo=";
     };
 
     withUnfree = fromCUDA;
