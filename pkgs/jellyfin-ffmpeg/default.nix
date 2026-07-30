@@ -1,12 +1,9 @@
 {
   fetchFromGitHub,
   ffmpeg_8-full,
-  lib,
   fromCUDA ? false,
   ...
 }: let
-  inherit (lib) optionals;
-
   pname = "jellyfin-ffmpeg";
   version = "8.1.2-2";
 in
@@ -21,6 +18,7 @@ in
     };
 
     withUnfree = fromCUDA;
+    withCudaLLVM = false; # Fails to build with clang
   })
   .overrideAttrs (old: {
     inherit pname;
@@ -30,9 +28,6 @@ in
       ++ [
         "--extra-version=Jellyfin"
       ];
-
-    # Clobber upstream patches as they don't apply to the Jellyfin fork
-    patches = [] ++ optionals fromCUDA [./nvccflags-cpp14.patch];
 
     postPatch = ''
       for file in $(cat debian/patches/series); do
