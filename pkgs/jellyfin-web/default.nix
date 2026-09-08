@@ -3,7 +3,6 @@
   stdenv,
   fetchFromGitHub,
   buildNpmPackage,
-  nodejs_22,
   pkg-config,
   xcbuild,
   pango,
@@ -23,8 +22,6 @@ buildNpmPackage (finalAttrs: {
     tag = "v${finalAttrs.version}";
     hash = "sha256-LwFjfG+OLgQDP7GqD4/wQhmym4N5QWe/qITQN+hxHh8=";
   };
-
-  nodejs = nodejs_22;
 
   postPatch =
     # bash
