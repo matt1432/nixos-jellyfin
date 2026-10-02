@@ -55,6 +55,12 @@
       default = self.nixosModules.jellyfin;
     };
 
+    checks = perSystemWithCUDA (pkgs: cudaPkgs: {
+      jellyfin-test = pkgs.testers.runNixOSTest (
+        import (nixpkgs + "/nixos/tests/jellyfin.nix") { lib = pkgs.lib; inherit pkgs; }
+      );
+    });
+
     formatter = perSystem (pkgs: pkgs.alejandra);
 
     devShells = perSystem (pkgs: {
