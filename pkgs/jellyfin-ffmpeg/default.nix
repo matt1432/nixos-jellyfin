@@ -39,15 +39,12 @@ in
     # CUDA
     withUnfree = fromCUDA;
     withCudaLLVM = false; # Fails to build with clang
+    withNpp = false; # Deprecated
   })
   .overrideAttrs (old: {
     inherit pname;
 
-    configureFlags =
-      old.configureFlags
-      ++ [
-        "--extra-version=Jellyfin"
-      ];
+    configureFlags = old.configureFlags ++ ["--extra-version=Jellyfin"];
 
     postPatch = ''
       for file in $(cat debian/patches/series); do
