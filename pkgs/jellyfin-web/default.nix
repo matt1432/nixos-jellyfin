@@ -14,13 +14,13 @@
 }:
 buildNpmPackage (finalAttrs: {
   pname = "jellyfin-web";
-  version = "12.2";
+  version = "12.3";
 
   src = fetchFromGitHub {
     owner = "jellyfin";
     repo = "jellyfin-web";
     tag = "v${finalAttrs.version}";
-    hash = "sha256-+GcftM0qzUBPvqsyoRZ1E8VVZsWEeMJTVEqDdi6POyg=";
+    hash = "sha256-VBCHgduimq25vFYUzDrEwuq6cIUcLqFzqGukOnF74Yg=";
   };
 
   postPatch =
@@ -44,7 +44,7 @@ buildNpmPackage (finalAttrs: {
           "return toBoolean(this.get('preferFmp4HlsContainer', false), false);"
     '';
 
-  npmDepsHash = "sha256-kcDBFX4MQxixlIKrOezTkufaOYfkxE7yc/b/HlCim0I=";
+  npmDepsHash = "sha256-JkIh3fm3LGks28hzNwwzaoEZB6qwbUIZihBP9ZToofc=";
 
   preBuild = ''
     # using sass-embedded fails at executing node_modules/sass-embedded-linux-x64/dart-sass/src/dart
