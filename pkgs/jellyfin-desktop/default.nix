@@ -18,7 +18,7 @@
   cacert,
 }: let
   pname = "jellyfin-desktop";
-  version = "2.0.0";
+  version = "2.1.0-pre1";
 in
   stdenv.mkDerivation {
     inherit pname version;
@@ -27,7 +27,7 @@ in
       owner = "jellyfin";
       repo = "jellyfin-desktop";
       rev = "v${version}";
-      hash = "sha256-ITlYOrMS6COx9kDRSBi4wM6mzL/Q2G5X9GbABwDIOe4=";
+      hash = "sha256-a6LuX6cnWCInlWfb06k1fHTNiHMY+jstY1nGC93QPw8=";
       fetchSubmodules = true;
     };
     patches = [
