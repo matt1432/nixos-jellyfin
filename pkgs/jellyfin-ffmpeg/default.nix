@@ -9,7 +9,7 @@
   inherit (lib) remove;
 
   pname = "jellyfin-ffmpeg";
-  version = "8.1.3-1";
+  version = "8.1.3-2";
 
   swScalePatch = fetchpatch2 {
     url = "https://salsa.debian.org/multimedia-team/ffmpeg/-/raw/d52aea25bc9123bfaf61f7a7e5a0d9da01c8788d/debian/patches/0001-swscale-loongarch-fix-buffer-underflow-in-yuv2plane1.patch";
@@ -23,7 +23,7 @@ in
       owner = "jellyfin";
       repo = pname;
       rev = "v${version}";
-      hash = "sha256-sxJyUaB0rqpVzd6OVRC6kPVWyBdgFUzvyqwLCkMKRgM=";
+      hash = "sha256-m6A/d7WszBzAqRAVkzN0PL0do9vZlceucDBgwT5VILE=";
     };
     buildFfplay = false; # requires SDL2 which gets disabled
     buildFfprobe = true; # required by various programs like Immich
