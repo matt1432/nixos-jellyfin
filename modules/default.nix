@@ -9,10 +9,13 @@ self: {
     boolToString
     concatStringsSep
     concatMapStringsSep
+    getExe
     head
     literalExpression
+    mkEnableOption
     mkForce
     mkIf
+    mkMerge
     mkOption
     optionalAttrs
     optionalString
@@ -155,6 +158,31 @@ in {
       '';
     };
 
+    waitForReady = {
+      enable = mkEnableOption ''
+        waiting for Jellyfin's health endpoint to report `Healthy` before
+        `jellyfin.service` is considered started. This makes `After=jellyfin.service`
+        in other units mean that the Jellyfin API is actually reachable
+      '';
+
+      url = mkOption {
+        type = types.str;
+        default = "http://127.0.0.1:8096/health";
+        description = ''
+          The URL polled until it returns `Healthy`.
+        '';
+      };
+
+      timeout = mkOption {
+        type = types.str;
+        default = "5min";
+        description = ''
+          Value of `TimeoutStartSec` for `jellyfin.service`. This covers both
+          Jellyfin's startup and the time spent waiting for it to be healthy.
+        '';
+      };
+    };
+
     settings = mkOption {
       default = null;
       type = types.nullOr (types.submodule {
@@ -191,7 +219,7 @@ in {
   config = mkIf cfg.enable {
     nixpkgs.overlays = [self.overlays.default];
 
-    systemd.services."jellyfin" =
+    systemd.services."jellyfin" = mkMerge [
       {
         serviceConfig.ExecStart = mkForce (concatStringsSep " " [
           "${cfg.finalPackage}/bin/jellyfin"
@@ -201,7 +229,8 @@ in {
           "--logdir '${cfg.logDir}'"
         ]);
       }
-      // optionalAttrs (cfg.settings != null) {
+
+      (mkIf (cfg.settings != null) {
         restartTriggers = [(builtins.toJSON cfg.settings)];
 
         preStart = ''
@@ -214,7 +243,20 @@ in {
 
           ${configSetupCmds}
         '';
-      };
+      })
+
+      (mkIf cfg.waitForReady.enable {
+        # systemd only considers the unit started once ExecStartPost has exited,
+        # so units ordered after jellyfin.service wait for this loop.
+        postStart = ''
+          until [ "$(${getExe pkgs.curl} -fsS '${cfg.waitForReady.url}' 2>/dev/null)" = "Healthy" ]; do
+            sleep 2
+          done
+        '';
+
+        serviceConfig.TimeoutStartSec = cfg.waitForReady.timeout;
+      })
+    ];
   };
 
   # For accurate stack trace
