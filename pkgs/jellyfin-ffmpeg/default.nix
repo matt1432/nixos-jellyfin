@@ -3,10 +3,11 @@
   fetchFromGitHub,
   fetchpatch2,
   ffmpeg_8-full,
+  cudaPackages,
   fromCUDA ? false,
   ...
 }: let
-  inherit (lib) remove;
+  inherit (lib) optionalAttrs remove;
 
   pname = "jellyfin-ffmpeg";
   version = "8.1.3-2";
@@ -16,31 +17,35 @@
     hash = "sha256-QRkb7z4Btyd9ZgV/1hh6Fb87IhkygFgVDqQdloXKL6Q=";
   };
 in
-  (ffmpeg_8-full.override {
-    inherit version; # Important! This sets the ABI.
+  (ffmpeg_8-full.override ({
+      inherit version; # Important! This sets the ABI.
 
-    source = fetchFromGitHub {
-      owner = "jellyfin";
-      repo = pname;
-      rev = "v${version}";
-      hash = "sha256-m6A/d7WszBzAqRAVkzN0PL0do9vZlceucDBgwT5VILE=";
-    };
-    buildFfplay = false; # requires SDL2 which gets disabled
-    buildFfprobe = true; # required by various programs like Immich
+      source = fetchFromGitHub {
+        owner = "jellyfin";
+        repo = pname;
+        rev = "v${version}";
+        hash = "sha256-m6A/d7WszBzAqRAVkzN0PL0do9vZlceucDBgwT5VILE=";
+      };
+      buildFfplay = false; # requires SDL2 which gets disabled
+      buildFfprobe = true; # required by various programs like Immich
 
-    # dependencies with big closure sizes that are not enabled by upstream in
-    # https://github.com/jellyfin/jellyfin-ffmpeg/tree/jellyfin/builder/scripts.d
-    withFrei0r = false;
-    withRav1e = false;
-    withSamba = false;
-    withSdl2 = false;
-    withWhisper = false;
+      # dependencies with big closure sizes that are not enabled by upstream in
+      # https://github.com/jellyfin/jellyfin-ffmpeg/tree/jellyfin/builder/scripts.d
+      withFrei0r = false;
+      withRav1e = false;
+      withSamba = false;
+      withSdl2 = false;
+      withWhisper = false;
 
-    # CUDA
-    withUnfree = fromCUDA;
-    withCudaLLVM = false; # Fails to build with clang
-    withNpp = false; # Deprecated
-  })
+      # CUDA
+      withUnfree = fromCUDA;
+      withCudaLLVM = false; # Fails to build with clang
+      withNpp = false; # Deprecated
+    }
+    // optionalAttrs fromCUDA {
+      # Lets the CUDA version be picked with `.override { cudaPackages = pkgs.cudaPackages_X_Y; }`
+      inherit (cudaPackages) cuda_cudart cuda_nvcc libnpp;
+    }))
   .overrideAttrs (old: {
     inherit pname;
 

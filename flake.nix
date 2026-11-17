@@ -57,7 +57,10 @@
 
     checks = perSystemWithCUDA (pkgs: cudaPkgs: {
       jellyfin-test = pkgs.testers.runNixOSTest (
-        import (nixpkgs + "/nixos/tests/jellyfin.nix") { lib = pkgs.lib; inherit pkgs; }
+        import (nixpkgs + "/nixos/tests/jellyfin.nix") {
+          lib = pkgs.lib;
+          inherit pkgs;
+        }
       );
     });
 
